@@ -36,7 +36,6 @@ class HomeCubit extends Cubit<HomeState> {
     final current = state;
     if (current is! HomeLoaded) return;
 
-    // ✅ نحتفظ بالـ categories عشان متتمسحش
     emit(current.copyWith(products: [], selectedCategory: category));
 
     try {
@@ -49,7 +48,6 @@ class HomeCubit extends Cubit<HomeState> {
             (await _repo.getProductsByCategory(category)).cast<ProductModel>();
       }
 
-      // ✅ نمسك الـ state من جديد بعد الـ await
       final updatedState = state;
       if (updatedState is! HomeLoaded) return;
 

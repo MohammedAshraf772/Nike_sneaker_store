@@ -23,7 +23,6 @@ class AppStrings {
       'image': 'https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png',
     },
   ];
-
   static const String splashRoute = '/';
   static const String onboardingRoute = '/onboarding';
   static const String homeRoute = '/home';

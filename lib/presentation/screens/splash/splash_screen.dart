@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/core/contants/app_stringes.dart';
 import '../../../logic/splash/splash_cubit.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -12,10 +11,12 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => SplashCubit()..init(),
-      child: BlocListener<SplashCubit, bool>(
-        listener: (context, isDone) {
-          if (isDone) {
-            context.go(AppStrings.onboardingRoute);
+      child: BlocListener<SplashCubit, SplashStatus>(
+        listener: (context, status) {
+          if (status == SplashStatus.authenticated) {
+            context.go('/home');
+          } else if (status == SplashStatus.unauthenticated) {
+            context.go('/onboarding');
           }
         },
         child: const _SplashView(),
@@ -98,7 +99,6 @@ class _SplashViewState extends State<_SplashView>
               ),
             ),
           ),
-
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -120,9 +120,7 @@ class _SplashViewState extends State<_SplashView>
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 24),
-
                 FadeTransition(
                   opacity: _taglineAnim,
                   child: const Text(
@@ -138,7 +136,6 @@ class _SplashViewState extends State<_SplashView>
               ],
             ),
           ),
-
           Positioned(
             bottom: 60,
             left: 0,

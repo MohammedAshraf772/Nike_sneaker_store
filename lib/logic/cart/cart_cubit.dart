@@ -11,10 +11,8 @@ class CartCubit extends Cubit<CartState> {
     final index = items.indexWhere((i) => i.product.id == product.id);
 
     if (index != -1) {
-      // المنتج موجود — زود الـ quantity
       items[index] = items[index].copyWith(quantity: items[index].quantity + 1);
     } else {
-      // منتج جديد
       items.add(CartItemModel(product: product, quantity: 1));
     }
 

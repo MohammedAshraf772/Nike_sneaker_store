@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/logic/auth/auth_cubit.dart';
+import 'package:nike_sneaker_store/logic/auth/auth_state.dart';
+import 'package:nike_sneaker_store/logic/theme/theme_cubit.dart';
 import '../../../logic/cart/cart_cubit.dart';
 import '../../../logic/cart/cart_state.dart';
 import '../../../logic/profile/profile_cubit.dart';
@@ -54,16 +58,10 @@ class _ProfileView extends StatelessWidget {
                     icon: Icons.dark_mode_outlined,
                     title: 'Dark Mode',
                     value: state.isDarkMode,
-                    onChanged:
-                        (_) => context.read<ProfileCubit>().toggleDarkMode(),
-                  ),
-                  _buildToggleTile(
-                    icon: Icons.notifications_outlined,
-                    title: 'Notifications',
-                    value: state.isNotificationsOn,
-                    onChanged:
-                        (_) =>
-                            context.read<ProfileCubit>().toggleNotifications(),
+                    onChanged: (_) {
+                      context.read<ThemeCubit>().toggleTheme();
+                      context.read<ProfileCubit>().toggleDarkMode();
+                    },
                   ),
                 ]),
                 _buildSection('Support', [
@@ -96,110 +94,95 @@ class _ProfileView extends StatelessWidget {
   // ── Header ──
   SliverToBoxAdapter _buildHeader(BuildContext context, ProfileState state) {
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (context, authState) {
+          final name = authState is AuthAuthenticated ? authState.name : 'User';
+          final email = authState is AuthAuthenticated ? authState.email : '';
+
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 8),
+            child: Column(
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: AppColors.white,
-                      size: 18,
-                    ),
-                  ),
-                ),
                 const Text(
                   'Profile',
                   style: TextStyle(
                     color: AppColors.white,
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(width: 44),
-              ],
-            ),
-            const SizedBox(height: 28),
-
-            // Avatar
-            Stack(
-              children: [
-                Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary,
-                        AppColors.primary.withOpacity(0.6),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      state.name.isNotEmpty ? state.name[0].toUpperCase() : 'A',
-                      style: const TextStyle(
-                        color: AppColors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w800,
+                const SizedBox(height: 28),
+                Stack(
+                  children: [
+                    Container(
+                      width: 88,
+                      height: 88,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary,
+                            AppColors.primary.withOpacity(0.6),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                          style: const TextStyle(
+                            color: AppColors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                       ),
                     ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 26,
+                        height: 26,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.background,
+                            width: 2,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.edit_rounded,
+                          color: AppColors.white,
+                          size: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    color: AppColors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.background, width: 2),
-                    ),
-                    child: const Icon(
-                      Icons.edit_rounded,
-                      color: AppColors.white,
-                      size: 12,
-                    ),
+                const SizedBox(height: 4),
+                Text(
+                  email,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-
-            Text(
-              state.name,
-              style: const TextStyle(
-                color: AppColors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              state.email,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -561,7 +544,13 @@ class _ProfileView extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await context.read<AuthCubit>().logout();
+                  if (context.mounted) {
+                    context.go('/login');
+                  }
+                },
                 child: const Text(
                   'Log Out',
                   style: TextStyle(color: AppColors.primary),

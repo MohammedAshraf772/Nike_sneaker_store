@@ -70,7 +70,7 @@ class _OnboardingViewState extends State<_OnboardingView>
 
   void _goNext(OnboardingState state) {
     if (state.isLastPage) {
-      context.go(AppStrings.homeRoute);
+      context.go('/login');
     } else {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
@@ -117,7 +117,7 @@ class _OnboardingViewState extends State<_OnboardingView>
                 top: 56,
                 right: 24,
                 child: GestureDetector(
-                  onTap: () => context.go(AppStrings.homeRoute),
+                  onTap: () => context.go('/login'),
                   child: Text(
                     'Skip',
                     style: AppTextStyles.bodyMedium.copyWith(
