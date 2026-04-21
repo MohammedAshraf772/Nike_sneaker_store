@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/theme/app_theme.dart';
+import 'package:nike_sneaker_store/core/theme/theme_cubit.dart';
 import 'package:nike_sneaker_store/routes/app_router.dart';
-import 'logic/theme/theme_cubit.dart';
 
 class NikeApp extends StatelessWidget {
   const NikeApp({super.key});

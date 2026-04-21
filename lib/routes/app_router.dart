@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_stringes.dart';
-import 'package:nike_sneaker_store/presentation/screens/home/home_screen.dart';
-import '../../logic/auth/auth_cubit.dart';
-import '../../presentation/screens/auth/login_screen.dart';
-import '../../presentation/screens/splash/splash_screen.dart';
-import '../../presentation/screens/onboarding/onboarding_screen.dart';
+import 'package:nike_sneaker_store/features/auth/core/cubit/auth_cubit.dart';
+import 'package:nike_sneaker_store/features/auth/core/screens/login_screen.dart';
+import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
+import 'package:nike_sneaker_store/features/onboarding/onboarding_screen.dart';
+import 'package:nike_sneaker_store/features/spash/splash_screen.dart';
 
 class AppRouter {
   AppRouter._();
