@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:nike_sneaker_store/features/auth/core/cubit/auth_cubit.dart';
+import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -316,71 +316,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
-/*import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_state.dart';
-import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
-import '../cubit/auth_cubit.dart';
-
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(hintText: "Email"),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(hintText: "Password"),
-            ),
-            const SizedBox(height: 20),
-
-            BlocConsumer<AuthCubit, AuthState>(
-              listener: (context, state) {
-                if (state is AuthAuthenticated) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const HomeScreen()),
-                  );
-                }
-
-                if (state is AuthError) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.message)));
-                }
-              },
-              builder: (context, state) {
-                return ElevatedButton(
-                  onPressed: () {
-                    context.read<AuthCubit>().register(
-                      emailController.text,
-                      passwordController.text,
-                    );
-                  },
-                  child:
-                      state is AuthLoading
-                          ? const CircularProgressIndicator()
-                          : const Text("Login"),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-*/

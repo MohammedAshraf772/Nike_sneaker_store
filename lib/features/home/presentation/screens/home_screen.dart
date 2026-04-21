@@ -4,15 +4,14 @@ import 'package:dio/dio.dart';
 
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/widgets/product_card.dart';
-import 'package:nike_sneaker_store/features/cart/cubit/cart_cubit.dart';
-import 'package:nike_sneaker_store/features/cart/cubit/cart_state.dart';
+import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
 import 'package:nike_sneaker_store/features/data/models/product_model.dart';
 
 import 'package:nike_sneaker_store/features/home/data/repo/product_repository.dart';
 import 'package:nike_sneaker_store/features/home/presentation/cubit/home_cubit.dart';
 
 import 'package:nike_sneaker_store/features/home/presentation/screens/product_detail_screen.dart';
-import 'package:nike_sneaker_store/features/search/presentation/screens/search_screen.dart';
+import 'package:nike_sneaker_store/features/profile/presentation/screens/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -70,7 +69,7 @@ class _HomeView extends StatelessWidget {
   Widget _buildContent(BuildContext context, HomeSuccess state) {
     return CustomScrollView(
       slivers: [
-        _buildAppBar(),
+        _buildAppBar(context),
         _buildSearchBar(context),
         _buildSectionTitle('${state.products.length} Products Found'),
         _buildProductsGrid(context, state),
@@ -78,36 +77,57 @@ class _HomeView extends StatelessWidget {
     );
   }
 
-  SliverToBoxAdapter _buildAppBar() {
-    return const SliverToBoxAdapter(
+  //  AppBar (فيه Profile + Cart)
+  SliverToBoxAdapter _buildAppBar(BuildContext context) {
+    return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Text(
-          "Home",
-          style: TextStyle(color: Colors.white, fontSize: 22),
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Home",
+              style: TextStyle(color: Colors.white, fontSize: 22),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.person, color: Colors.white),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const CartScreen()),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
+  //  Search Bar
   SliverToBoxAdapter _buildSearchBar(BuildContext context) {
     return SliverToBoxAdapter(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const SearchScreen()),
-          );
-        },
-        child: Container(
-          margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Text('Search...', style: TextStyle(color: Colors.grey)),
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(12),
         ),
+        child: const Text('Search...', style: TextStyle(color: Colors.grey)),
       ),
     );
   }
@@ -121,6 +141,7 @@ class _HomeView extends StatelessWidget {
     );
   }
 
+  //  Grid المنتجات
   SliverPadding _buildProductsGrid(BuildContext context, HomeSuccess state) {
     return SliverPadding(
       padding: const EdgeInsets.all(16),
@@ -142,27 +163,11 @@ class _HomeView extends StatelessWidget {
         }, childCount: state.products.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 0.7,
         ),
       ),
-    );
-  }
-}
-
-class _CartButton extends StatelessWidget {
-  const _CartButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CartCubit, CartState>(
-      builder: (context, state) {
-        return Stack(
-          children: [
-            const Icon(Icons.shopping_cart, color: Colors.white),
-            if (state.totalItems > 0)
-              Positioned(right: 0, child: Text('${state.totalItems}')),
-          ],
-        );
-      },
     );
   }
 }

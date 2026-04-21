@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart'
-    show AuthCubit;
-import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_state.dart';
+import 'package:nike_sneaker_store/features/auth/core/screens/forgot_password_screen.dart';
+import '../../../../core/contants/app_colors.dart';
+import '../cubit/auth_cubit.dart';
+import '../cubit/auth_state.dart';
 import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    return const _LoginView();
+  }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginView extends StatefulWidget {
+  const _LoginView();
+
+  @override
+  State<_LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<_LoginView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -145,13 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForgotPassword() {
     return Align(
       alignment: Alignment.centerRight,
-      child: Text(
-        'Forgot Password?',
-        style: TextStyle(
-          color: AppColors.primary,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
+      child: TextButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+          );
+        },
+        child: const Text("Forgot Password"),
       ),
     );
   }
@@ -220,17 +230,12 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
         ),
         GestureDetector(
-          onTap:
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (_) => BlocProvider.value(
-                        value: context.read<AuthCubit>(),
-                        child: RegisterScreen(),
-                      ),
-                ),
-              ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RegisterScreen()),
+            );
+          },
           child: const Text(
             'Sign Up',
             style: TextStyle(
@@ -295,71 +300,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-/*import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_state.dart';
-import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
-import '../cubit/auth_cubit.dart';
-
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(hintText: "Email"),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(hintText: "Password"),
-            ),
-            const SizedBox(height: 20),
-
-            BlocConsumer<AuthCubit, AuthState>(
-              listener: (context, state) {
-                if (state is AuthAuthenticated) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const HomeScreen()),
-                  );
-                }
-
-                if (state is AuthError) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.message)));
-                }
-              },
-              builder: (context, state) {
-                return ElevatedButton(
-                  onPressed: () {
-                    context.read<AuthCubit>().login(
-                      emailController.text,
-                      passwordController.text,
-                    );
-                  },
-                  child:
-                      state is AuthLoading
-                          ? const CircularProgressIndicator()
-                          : const Text("Login"),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-*/

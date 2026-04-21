@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/features/auth/core/widgets/product_card.dart';
+import 'package:nike_sneaker_store/core/widgets/product_card.dart';
 import 'package:nike_sneaker_store/features/cart/cubit/cart_cubit.dart';
 import 'package:nike_sneaker_store/features/home/data/repo/product_repository.dart';
 import 'package:nike_sneaker_store/features/home/presentation/screens/product_detail_screen.dart';
