@@ -10,21 +10,21 @@ class AuthCubit extends Cubit<AuthState> {
 
   // LOGIN
   Future<void> login({required String email, required String password}) async {
-    emit(AuthLoading());
     try {
-      final user = await _auth.signInWithEmailAndPassword(
+      emit(AuthLoading());
+
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
+      final user = credential.user!;
+
       emit(
-        AuthAuthenticated(
-          name: user.user?.email ?? '',
-          email: user.user?.email ?? '',
-        ),
+        AuthAuthenticated(name: user.email!.split('@')[0], email: user.email!),
       );
-    } catch (e) {
-      emit(AuthError(e.toString()));
+    } on FirebaseAuthException catch (e) {
+      emit(AuthError(e.message ?? "Login failed"));
     }
   }
 
@@ -35,21 +35,17 @@ class AuthCubit extends Cubit<AuthState> {
     required String password,
     required String confirmPassword,
   }) async {
-    if (password != confirmPassword) {
-      emit(AuthError("Passwords do not match"));
-      return;
-    }
-
-    emit(AuthLoading());
     try {
-      final user = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      emit(AuthLoading());
 
-      emit(AuthAuthenticated(name: name, email: user.user?.email ?? ''));
-    } catch (e) {
-      emit(AuthError(e.toString()));
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      final user = credential.user!;
+
+      emit(AuthAuthenticated(name: name, email: user.email!));
+    } on FirebaseAuthException catch (e) {
+      emit(AuthError(e.message ?? "Register failed"));
     }
   }
 

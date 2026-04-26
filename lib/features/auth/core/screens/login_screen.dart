@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/features/auth/core/screens/forgot_password_screen.dart';
+import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
 import '../../../../core/contants/app_colors.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
@@ -42,7 +43,10 @@ class _LoginViewState extends State<_LoginView> {
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            context.go('/home');
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            );
           }
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
