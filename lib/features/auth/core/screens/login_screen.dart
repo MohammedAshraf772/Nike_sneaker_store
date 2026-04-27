@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/features/auth/core/screens/forgot_password_screen.dart';
 import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
 import '../../../../core/contants/app_colors.dart';

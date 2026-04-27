@@ -57,7 +57,6 @@ class ProductCard extends StatelessWidget {
             ),
           ),
 
-          // badge لو المنتج rating عالي
           if (product.ratingRate >= 4.5)
             Positioned(
               top: 10,
