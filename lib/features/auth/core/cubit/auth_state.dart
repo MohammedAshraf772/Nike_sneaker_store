@@ -11,6 +11,8 @@ class AuthAuthenticated extends AuthState {
   AuthAuthenticated({required this.name, required this.email});
 }
 
+class AuthUnauthenticated extends AuthState {}
+
 class AuthError extends AuthState {
   final String message;
 

@@ -8,11 +8,9 @@ class FavoritesCubit extends Cubit<List<Map<String, dynamic>>> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  String? get uid => _auth.currentUser?.uid;
+  String get uid => _auth.currentUser!.uid;
 
   Future<void> loadFavorites() async {
-    if (uid == null) return;
-
     final snapshot =
         await _firestore
             .collection('users')
@@ -20,36 +18,27 @@ class FavoritesCubit extends Cubit<List<Map<String, dynamic>>> {
             .collection('favorites')
             .get();
 
-    final items =
-        snapshot.docs.map((doc) {
-          final data = doc.data();
-          return {'docId': doc.id, ...data};
-        }).toList();
-
-    emit(items);
-  }
-
-  bool isFavorite(String title) {
-    return state.any((item) => item['title'] == title);
+    emit(snapshot.docs.map((e) => e.data()).toList());
   }
 
   Future<void> toggleFavorite(Map<String, dynamic> product) async {
-    if (uid == null) return;
-
-    final collection = _firestore
+    final doc = _firestore
         .collection('users')
         .doc(uid)
-        .collection('favorites');
+        .collection('favorites')
+        .doc(product['id'].toString());
+    final exists = (await doc.get()).exists;
 
-    final snapshot =
-        await collection.where('title', isEqualTo: product['title']).get();
-
-    if (snapshot.docs.isNotEmpty) {
-      await snapshot.docs.first.reference.delete();
+    if (exists) {
+      await doc.delete();
     } else {
-      await collection.add(product);
+      await doc.set(product);
     }
 
-    loadFavorites();
+    await loadFavorites();
+  }
+
+  bool isFavorite(int id) {
+    return state.any((e) => e['id'] == id);
   }
 }

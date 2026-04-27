@@ -20,8 +20,8 @@ class ProductDetailScreen extends StatelessWidget {
           BlocBuilder<FavoritesCubit, List<Map<String, dynamic>>>(
             builder: (context, favorites) {
               final isFav = context.read<FavoritesCubit>().isFavorite(
-                product.id.toString(),
-              ); // 👈 مهم
+                product.id,
+              );
 
               return IconButton(
                 icon: Icon(
@@ -30,7 +30,7 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.read<FavoritesCubit>().toggleFavorite({
-                    'id': product.id, // 👈 مهم
+                    'id': product.id,
                     'title': product.title,
                     'image': product.image,
                     'price': product.price,
