@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nike_sneaker_store/features/favourates/cubit/favorites_cubit.dart';
+import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_cubit.dart';
 
 import 'firebase_options.dart';
 
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_cubit.dart';
 import 'package:nike_sneaker_store/features/auth/core/screens/login_screen.dart';
-
 import 'package:nike_sneaker_store/features/cart/cubit/cart_cubit.dart';
+import 'package:nike_sneaker_store/features/favourates/cubit/favorites_cubit.dart';
+
+import 'core/cubit/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,14 +28,20 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthCubit()),
-
         BlocProvider(create: (_) => CartCubit()),
-
         BlocProvider(create: (_) => FavoritesCubit()),
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => ProfileCubit()),
       ],
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: LoginScreen(),
+      child: BlocBuilder<ThemeCubit, bool>(
+        builder: (context, isDark) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: isDark ? ThemeData.dark() : ThemeData.light(),
+
+            home: const LoginScreen(),
+          );
+        },
       ),
     );
   }

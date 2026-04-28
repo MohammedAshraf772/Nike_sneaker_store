@@ -1,53 +1,104 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 import 'package:nike_sneaker_store/features/data/models/product_model.dart';
-
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   CartCubit() : super(const CartState());
 
-  void addToCart(ProductModel product) {
-    final items = List<CartItemModel>.from(state.items);
-    final index = items.indexWhere((i) => i.product.id == product.id);
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
 
-    if (index != -1) {
-      items[index] = items[index].copyWith(quantity: items[index].quantity + 1);
+  String get uid => _auth.currentUser!.uid;
+
+  Future<void> loadCart() async {
+    final snapshot =
+        await _firestore.collection('users').doc(uid).collection('cart').get();
+
+    final items =
+        snapshot.docs.map((e) => CartItemModel.fromJson(e.data())).toList();
+
+    emit(state.copyWith(items: items));
+  }
+
+  Future<void> addToCart(ProductModel product) async {
+    final doc = _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('cart')
+        .doc(product.id.toString());
+
+    final snapshot = await doc.get();
+
+    if (snapshot.exists) {
+      final current = snapshot.data()!;
+      await doc.update({'quantity': current['quantity'] + 1});
     } else {
-      items.add(CartItemModel(product: product, quantity: 1));
+      await doc.set({
+        'id': product.id,
+        'title': product.title,
+        'image': product.image,
+        'price': product.price,
+        'category': product.category,
+        'quantity': 1,
+      });
     }
 
-    emit(state.copyWith(items: items));
+    await loadCart();
   }
 
-  void removeFromCart(int productId) {
-    final items = state.items.where((i) => i.product.id != productId).toList();
-    emit(state.copyWith(items: items));
+  Future<void> removeFromCart(int productId) async {
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('cart')
+        .doc(productId.toString())
+        .delete();
+
+    await loadCart();
   }
 
-  void incrementQuantity(int productId) {
-    final items = List<CartItemModel>.from(state.items);
-    final index = items.indexWhere((i) => i.product.id == productId);
-    if (index != -1) {
-      items[index] = items[index].copyWith(quantity: items[index].quantity + 1);
-      emit(state.copyWith(items: items));
+  Future<void> incrementQuantity(int productId) async {
+    final doc = _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('cart')
+        .doc(productId.toString());
+
+    final data = (await doc.get()).data()!;
+    await doc.update({'quantity': data['quantity'] + 1});
+
+    await loadCart();
+  }
+
+  Future<void> decrementQuantity(int productId) async {
+    final doc = _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('cart')
+        .doc(productId.toString());
+
+    final data = (await doc.get()).data()!;
+
+    if (data['quantity'] == 1) {
+      await doc.delete();
+    } else {
+      await doc.update({'quantity': data['quantity'] - 1});
     }
+
+    await loadCart();
   }
 
-  void decrementQuantity(int productId) {
-    final items = List<CartItemModel>.from(state.items);
-    final index = items.indexWhere((i) => i.product.id == productId);
-    if (index != -1) {
-      if (items[index].quantity == 1) {
-        items.removeAt(index);
-      } else {
-        items[index] = items[index].copyWith(
-          quantity: items[index].quantity - 1,
-        );
-      }
-      emit(state.copyWith(items: items));
+  Future<void> clearCart() async {
+    final snapshot =
+        await _firestore.collection('users').doc(uid).collection('cart').get();
+
+    for (var doc in snapshot.docs) {
+      await doc.reference.delete();
     }
-  }
 
-  void clearCart() => emit(const CartState());
+    emit(const CartState());
+  }
 }

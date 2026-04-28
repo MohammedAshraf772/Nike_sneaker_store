@@ -1,21 +1,26 @@
-import 'package:equatable/equatable.dart';
 import 'package:nike_sneaker_store/features/data/models/product_model.dart';
 
-class CartItemModel extends Equatable {
+class CartItemModel {
   final ProductModel product;
   final int quantity;
 
-  const CartItemModel({required this.product, required this.quantity});
+  CartItemModel({required this.product, required this.quantity});
 
   double get totalPrice => product.price * quantity;
 
-  CartItemModel copyWith({ProductModel? product, int? quantity}) {
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
     return CartItemModel(
-      product: product ?? this.product,
-      quantity: quantity ?? this.quantity,
+      product: ProductModel(
+        id: json['id'],
+        title: json['title'],
+        price: (json['price'] as num).toDouble(),
+        description: '',
+        category: json['category'],
+        image: json['image'],
+        ratingRate: 0,
+        ratingCount: 0,
+      ),
+      quantity: json['quantity'],
     );
   }
-
-  @override
-  List<Object?> get props => [product, quantity];
 }

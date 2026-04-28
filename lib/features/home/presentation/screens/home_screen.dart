@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/widgets/product_card.dart';
 import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
@@ -16,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => HomeCubit(ProductRepository(Dio()))..getProducts(),
+      create: (_) => HomeCubit(ProductRepository())..getProducts(),
       child: const _HomeView(),
     );
   }

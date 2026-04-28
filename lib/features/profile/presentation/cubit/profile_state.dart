@@ -1,42 +1,46 @@
-import 'package:equatable/equatable.dart';
-
-class ProfileState extends Equatable {
+class ProfileState {
   final String name;
   final String email;
   final String phone;
+  final String image;
   final bool isDarkMode;
-  final bool isNotificationsOn;
+  final bool isLoading;
 
-  const ProfileState({
-    this.name = 'Ahmed Mohamed',
-    this.email = 'ahmed@example.com',
-    this.phone = '+20 100 000 0000',
-    this.isDarkMode = true,
-    this.isNotificationsOn = true,
+  ProfileState({
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.image,
+    required this.isDarkMode,
+    required this.isLoading,
   });
+
+  factory ProfileState.initial() {
+    return ProfileState(
+      name: '',
+      email: '',
+      phone: '',
+      image: '',
+      isDarkMode: false,
+      isLoading: false,
+    );
+  }
 
   ProfileState copyWith({
     String? name,
     String? email,
     String? phone,
+    String? image,
     bool? isDarkMode,
-    bool? isNotificationsOn,
+    bool? isLoading,
   }) {
     return ProfileState(
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
+      image: image ?? this.image,
       isDarkMode: isDarkMode ?? this.isDarkMode,
-      isNotificationsOn: isNotificationsOn ?? this.isNotificationsOn,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
-
-  @override
-  List<Object?> get props => [
-    name,
-    email,
-    phone,
-    isDarkMode,
-    isNotificationsOn,
-  ];
 }

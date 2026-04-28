@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
@@ -14,7 +13,7 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SearchCubit(ProductRepository(Dio())),
+      create: (_) => SearchCubit(ProductRepository()),
       child: const _SearchView(),
     );
   }

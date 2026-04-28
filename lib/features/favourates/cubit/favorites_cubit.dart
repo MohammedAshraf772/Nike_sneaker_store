@@ -27,6 +27,7 @@ class FavoritesCubit extends Cubit<List<Map<String, dynamic>>> {
         .doc(uid)
         .collection('favorites')
         .doc(product['id'].toString());
+
     final exists = (await doc.get()).exists;
 
     if (exists) {
