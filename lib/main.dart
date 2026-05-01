@@ -31,15 +31,16 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => CartCubit()),
         BlocProvider(create: (_) => FavoritesCubit()),
         BlocProvider(create: (_) => ThemeCubit()),
-        BlocProvider(create: (_) => ProfileCubit()),
+        BlocProvider(create: (_) => ProfileCubit()..loadProfile()),
       ],
       child: BlocBuilder<ThemeCubit, bool>(
         builder: (context, isDark) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: isDark ? ThemeData.dark() : ThemeData.light(),
-
-            home: const LoginScreen(),
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+            home: LoginScreen(),
           );
         },
       ),
