@@ -1,0 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/user_model.dart';
+
+class AuthRemoteDataSource {
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+
+  AuthRemoteDataSource(this.auth, this.firestore);
+
+  Future<UserModel> login(String email, String password) async {
+    final result = await auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    final user = result.user!;
+    final doc = await firestore.collection('users').doc(user.uid).get();
+
+    return UserModel.fromFirebase(user, doc.data());
+  }
+
+  Future<UserModel> register(String name, String email, String password) async {
+    final result = await auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    final user = result.user!;
+
+    await firestore.collection('users').doc(user.uid).set({
+      'name': name,
+      'email': email,
+    });
+
+    return UserModel(uid: user.uid, email: email, name: name);
+  }
+
+  Future<void> logout() async {
+    await auth.signOut();
+  }
+
+  User? get currentUser => auth.currentUser;
+}

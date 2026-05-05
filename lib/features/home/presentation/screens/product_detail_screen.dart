@@ -83,7 +83,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(product.image, height: 250),
+            Hero(
+              tag: "product_${product.id}",
+              child: Image.network(product.image, height: 250),
+            ),
 
             const SizedBox(height: 16),
 

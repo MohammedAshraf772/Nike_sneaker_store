@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nike_sneaker_store/core/widgets/bottom_nav_bar.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:nike_sneaker_store/features/spash/splash_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-            home: LoginScreen(),
+            home: SplashScreen(),
           );
         },
       ),

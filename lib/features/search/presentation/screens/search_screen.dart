@@ -33,7 +33,6 @@ class _SearchViewState extends State<_SearchView> {
   @override
   void initState() {
     super.initState();
-    // فتح الـ keyboard تلقائياً
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
@@ -72,7 +71,6 @@ class _SearchViewState extends State<_SearchView> {
     );
   }
 
-  // ── Search Bar ──
   Widget _buildSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -97,7 +95,6 @@ class _SearchViewState extends State<_SearchView> {
           ),
           const SizedBox(width: 12),
 
-          // Search Input
           Expanded(
             child: Container(
               height: 44,

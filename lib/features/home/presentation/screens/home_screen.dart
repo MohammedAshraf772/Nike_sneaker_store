@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/widgets/product_card.dart';
+import 'package:nike_sneaker_store/core/widgets/side_menu.dart';
 import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
 import 'package:nike_sneaker_store/features/data/models/product_model.dart';
 import 'package:nike_sneaker_store/features/home/data/repo/product_repository.dart';
 import 'package:nike_sneaker_store/features/home/presentation/cubit/home_cubit.dart';
 import 'package:nike_sneaker_store/features/home/presentation/screens/product_detail_screen.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/screens/profile_screen.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -27,6 +29,8 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const SideMenu(),
+
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: BlocBuilder<HomeCubit, HomeState>(
@@ -42,8 +46,27 @@ class _HomeView extends StatelessWidget {
   }
 
   Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(color: AppColors.primary),
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: 6,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        childAspectRatio: 0.7,
+      ),
+      itemBuilder: (_, __) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[800]!,
+          highlightColor: Colors.grey[700]!,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -86,6 +109,12 @@ class _HomeView extends StatelessWidget {
             ),
             Row(
               children: [
+                IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
                 IconButton(
                   icon: const Icon(Icons.person, color: Colors.white),
                   onPressed: () {
@@ -136,7 +165,6 @@ class _HomeView extends StatelessWidget {
     );
   }
 
-  //  Grid المنتجات
   SliverPadding _buildProductsGrid(BuildContext context, HomeSuccess state) {
     return SliverPadding(
       padding: const EdgeInsets.all(16),
