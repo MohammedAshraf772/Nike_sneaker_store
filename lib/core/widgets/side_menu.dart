@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/features/auth/core/cubit/auth_cubit.dart';
+import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/screens/profile_screen.dart';
 
