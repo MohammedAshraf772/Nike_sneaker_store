@@ -1,16 +1,60 @@
-# nike_sneaker_store
+# 🏀 Nike Sneaker Store App
 
-A new Flutter project.
+A modern Flutter e-commerce app inspired by Nike UI, built with Clean Architecture and Firebase.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+* 🔐 Authentication (Login / Register / Reset Password)
+* 🛒 Cart synced with Firebase Firestore
+* ❤️ Favorites system (Realtime)
+* 🖼️ Profile Image Upload (Firebase Storage)
+* 🌙 Dark Mode (Saved locally)
+* ⚡ Smooth Animations (Hero + Fade)
+* 🧠 Clean Architecture (Cubit + Repository pattern)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📱 Screens
+
+* Splash Screen
+* Login / Register
+* Home (Products)
+* Product Details
+* Cart
+* Favorites
+* Profile
+
+---
+
+## 🛠️ Tech Stack
+
+* Flutter
+* Firebase (Auth + Firestore + Storage)
+* Bloc (Cubit)
+* Dio (API)
+* Clean Architecture
+
+
+---
+
+## ⚙️ Setup
+
+```bash
+flutter pub get
+flutter run
+```
+
+---
+
+## 🔗 API Used
+
+https://fakestoreapi.com/
+
+---
+
+## 👨‍💻 Author
+
+Mohammed Ashraf
+Flutter Developer
