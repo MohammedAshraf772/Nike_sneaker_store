@@ -51,8 +51,8 @@ class _SplashScreenState extends State<SplashScreen> {
               opacity: value,
               child: Transform.scale(
                 scale: value,
-                child: Image.network(
-                  'https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg',
+                child: Image.asset(
+                  "assets/images/logo.png",
                   width: 120,
                   color: AppColors.primary,
                 ),
