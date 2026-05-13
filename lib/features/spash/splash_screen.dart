@@ -51,11 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
               opacity: value,
               child: Transform.scale(
                 scale: value,
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  width: 120,
-                  color: AppColors.primary,
-                ),
+                child: Image.asset("assets/images/logo.png", width: 120),
               ),
             );
           },
