@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../models/user_model.dart';
 
 class AuthRemoteDataSource {
@@ -15,9 +16,21 @@ class AuthRemoteDataSource {
     );
 
     final user = result.user!;
-    final doc = await firestore.collection('users').doc(user.uid).get();
 
-    return UserModel.fromFirebase(user, doc.data());
+    final docRef = firestore.collection('users').doc(user.uid);
+
+    final doc = await docRef.get();
+
+    if (!doc.exists) {
+      await docRef.set({
+        'name': user.displayName ?? 'User',
+        'email': user.email ?? email,
+      });
+    }
+
+    final updatedDoc = await docRef.get();
+
+    return UserModel.fromFirebase(user, updatedDoc.data());
   }
 
   Future<UserModel> register(String name, String email, String password) async {
@@ -27,6 +40,8 @@ class AuthRemoteDataSource {
     );
 
     final user = result.user!;
+
+    await user.updateDisplayName(name);
 
     await firestore.collection('users').doc(user.uid).set({
       'name': name,
