@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/features/auth/core/screens/forgot_password_screen.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
-import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
 import '../../../../core/contants/app_colors.dart';
 import 'register_screen.dart';
 
@@ -44,7 +43,7 @@ class _LoginViewState extends State<_LoginView> {
           if (state is AuthAuthenticated) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
+              MaterialPageRoute(builder: (_) => const LoginScreen()),
             );
           }
 
@@ -159,8 +158,8 @@ class _LoginViewState extends State<_LoginView> {
               ? null
               : () {
                 context.read<AuthCubit>().login(
-                  _emailController.text.trim(),
-                  _passwordController.text.trim(),
+                  email: _emailController.text.trim(),
+                  password: _passwordController.text.trim(),
                 );
               },
       child: Container(
