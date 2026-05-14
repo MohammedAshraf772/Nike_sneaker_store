@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'firebase_options.dart';
 
@@ -17,11 +16,10 @@ import 'package:nike_sneaker_store/features/auth/domain/usecses/register.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
 
 import 'package:nike_sneaker_store/features/cart/cubit/cart_cubit.dart';
+
 import 'package:nike_sneaker_store/features/favourates/cubit/favorites_cubit.dart';
 
 import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_cubit.dart';
-
-import 'package:nike_sneaker_store/logic/theme/theme_cubit.dart';
 
 import 'package:nike_sneaker_store/features/spash/splash_screen.dart';
 
@@ -35,64 +33,53 @@ void main() async {
     FirebaseFirestore.instance,
   );
 
-  final authRepo = AuthRepositoryImpl(authRemote);
+  final authRepository = AuthRepositoryImpl(authRemote);
 
-  final loginUseCase = Login(authRepo);
-  final registerUseCase = Register(authRepo);
-  final logoutUseCase = Logout(authRepo);
+  final loginUseCase = Login(authRepository);
+  final registerUseCase = Register(authRepository);
+  final logoutUseCase = Logout(authRepository);
 
   runApp(
     MyApp(
-      loginUseCase: loginUseCase,
-      registerUseCase: registerUseCase,
-      logoutUseCase: logoutUseCase,
+      login: loginUseCase,
+      register: registerUseCase,
+      logout: logoutUseCase,
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final Login loginUseCase;
-  final Register registerUseCase;
-  final Logout logoutUseCase;
+  final Login login;
+  final Register register;
+  final Logout logout;
 
   const MyApp({
     super.key,
-    required this.loginUseCase,
-    required this.registerUseCase,
-    required this.logoutUseCase,
+    required this.login,
+    required this.register,
+    required this.logout,
   });
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create:
-              (_) => AuthCubit(loginUseCase, registerUseCase, logoutUseCase),
-        ),
+        BlocProvider(create: (_) => AuthCubit(login, register, logout)),
 
         BlocProvider(create: (_) => CartCubit()),
 
         BlocProvider(create: (_) => FavoritesCubit()),
-
         BlocProvider(create: (_) => ProfileCubit()),
-
-        BlocProvider(create: (_) => ThemeCubit()),
       ],
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, mode) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
 
-            themeMode: mode,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
 
-            theme: ThemeData.light(),
+        themeMode: ThemeMode.dark,
 
-            darkTheme: ThemeData.dark(),
+        darkTheme: ThemeData.dark(),
 
-            home: const SplashScreen(),
-          );
-        },
+        home: const SplashScreen(),
       ),
     );
   }
