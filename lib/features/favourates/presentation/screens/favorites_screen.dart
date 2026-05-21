@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+
 import 'package:nike_sneaker_store/features/favourates/cubit/favorites_cubit.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -8,21 +10,17 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<FavoritesCubit>().loadFavorites();
-
     return Scaffold(
       backgroundColor: AppColors.background,
+
       appBar: AppBar(
         backgroundColor: AppColors.background,
-        title: const Text("Favourite"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        title: const Text("Favorites"),
       ),
+
       body: BlocBuilder<FavoritesCubit, List<Map<String, dynamic>>>(
-        builder: (context, favs) {
-          if (favs.isEmpty) {
+        builder: (context, favorites) {
+          if (favorites.isEmpty) {
             return const Center(
               child: Text(
                 "No Favorites Yet",
@@ -31,71 +29,50 @@ class FavoritesScreen extends StatelessWidget {
             );
           }
 
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: favs.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 0.7,
-            ),
+          return ListView.builder(
+            itemCount: favorites.length,
+
             itemBuilder: (context, index) {
-              final item = favs[index];
+              final product = favorites[index];
 
               return Container(
+                margin: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
+
                 decoration: BoxDecoration(
                   color: AppColors.card,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                child: Row(
                   children: [
+                    Image.network(product['image'], width: 80, height: 80),
+
+                    const SizedBox(width: 16),
+
                     Expanded(
-                      child: Stack(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
-                          Center(
-                            child: Image.network(item['image'], height: 100),
-                          ),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: GestureDetector(
-                              onTap: () {
-                                context.read<FavoritesCubit>().toggleFavorite(
-                                  item,
-                                );
-                              },
-                              child: const Icon(
-                                Icons.favorite,
-                                color: Colors.red,
-                              ),
+                          Text(
+                            product['title'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+
+                          const SizedBox(height: 8),
+
+                          Text(
+                            "\$${product['price']}",
+                            style: const TextStyle(color: AppColors.primary),
+                          ),
                         ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        item['title'],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Text(
-                        "\$${item['price']}",
-                        style: const TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
                     ),
                   ],

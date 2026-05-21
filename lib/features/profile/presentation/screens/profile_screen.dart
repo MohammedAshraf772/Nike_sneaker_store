@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/cubit/theme_cubit.dart';
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
+import 'package:nike_sneaker_store/features/auth/core/screens/login_screen.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
 import 'package:nike_sneaker_store/features/favourates/presentation/screens/favorites_screen.dart';
@@ -154,7 +154,11 @@ class _ProfileView extends StatelessWidget {
                   onTap: () async {
                     await context.read<AuthCubit>().logout();
                     if (context.mounted) {
-                      context.go('/login');
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        (route) => false,
+                      );
                     }
                   },
                   child: Container(
