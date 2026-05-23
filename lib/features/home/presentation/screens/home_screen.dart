@@ -4,7 +4,7 @@ import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/widgets/product_card.dart';
 import 'package:nike_sneaker_store/core/widgets/side_menu.dart';
 import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
-import 'package:nike_sneaker_store/features/data/models/product_model.dart';
+import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
 import 'package:nike_sneaker_store/features/home/data/repo/product_repository.dart';
 import 'package:nike_sneaker_store/features/home/presentation/cubit/home_cubit.dart';
 import 'package:nike_sneaker_store/features/home/presentation/screens/product_detail_screen.dart';

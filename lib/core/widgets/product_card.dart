@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 
-import 'package:nike_sneaker_store/features/data/models/product_model.dart';
+import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
 
 import 'package:nike_sneaker_store/features/favourates/cubit/favorites_cubit.dart';
 
@@ -28,25 +28,20 @@ class ProductCard extends StatelessWidget {
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
             Align(
               alignment: Alignment.topRight,
 
-              child: BlocBuilder<FavoritesCubit, List<Map<String, dynamic>>>(
+              child: BlocBuilder<FavoritesCubit, List<ProductModel>>(
                 builder: (context, favorites) {
                   final isFavorite = context.read<FavoritesCubit>().isFavorite(
-                    product.id,
+                    product,
                   );
 
                   return GestureDetector(
                     onTap: () {
-                      context.read<FavoritesCubit>().toggleFavorite({
-                        'id': product.id,
-                        'title': product.title,
-                        'image': product.image,
-                        'price': product.price,
-                        'category': product.category,
-                      });
+                      context.read<FavoritesCubit>().toggleFavorite(product);
                     },
 
                     child: AnimatedContainer(
@@ -54,6 +49,7 @@ class ProductCard extends StatelessWidget {
 
                       child: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
+
                         color: Colors.red,
                       ),
                     ),
@@ -65,6 +61,7 @@ class ProductCard extends StatelessWidget {
             Expanded(
               child: Hero(
                 tag: "product_${product.id}",
+
                 child: Image.network(product.image),
               ),
             ),
@@ -73,8 +70,11 @@ class ProductCard extends StatelessWidget {
 
             Text(
               product.title,
+
               maxLines: 1,
+
               overflow: TextOverflow.ellipsis,
+
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -85,6 +85,7 @@ class ProductCard extends StatelessWidget {
 
             Text(
               "\$${product.price}",
+
               style: const TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,

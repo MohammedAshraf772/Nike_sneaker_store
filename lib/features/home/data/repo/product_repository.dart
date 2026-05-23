@@ -1,4 +1,4 @@
-import 'package:nike_sneaker_store/features/data/models/product_model.dart';
+import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
 
 class ProductRepository {
   Future<List<ProductModel>> getProducts() async {

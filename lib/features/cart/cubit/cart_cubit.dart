@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
-import 'package:nike_sneaker_store/features/data/models/product_model.dart';
+import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {

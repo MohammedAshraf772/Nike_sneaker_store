@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
@@ -48,13 +50,16 @@ class _ProfileView extends StatelessWidget {
                       onTap: () {
                         context.read<ProfileCubit>().pickAndUploadImage();
                       },
+
                       child: CircleAvatar(
                         radius: 45,
                         backgroundColor: Colors.grey,
+
                         backgroundImage:
                             state.image.isNotEmpty
-                                ? NetworkImage(state.image)
+                                ? FileImage(File(state.image))
                                 : null,
+
                         child:
                             state.image.isEmpty
                                 ? const Icon(Icons.person, size: 40)

@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nike_sneaker_store/features/data/models/product_model.dart';
+import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
 import '../../data/repo/product_repository.dart';
 
 part 'home_state.dart';

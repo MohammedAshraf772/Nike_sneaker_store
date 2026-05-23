@@ -1,9 +1,9 @@
-part of 'profile_cubit.dart';
+class ProfileState {
+  final String image;
 
-abstract class ProfileState {}
+  const ProfileState({this.image = ''});
 
-class ProfileInitial extends ProfileState {}
-
-class ProfileLoaded extends ProfileState {}
-
-class ProfileImageUpdated extends ProfileState {}
+  ProfileState copyWith({String? image}) {
+    return ProfileState(image: image ?? this.image);
+  }
+}

@@ -1,45 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FavoritesCubit extends Cubit<List<Map<String, dynamic>>> {
+import '../../home/data/models/product_model.dart';
+
+class FavoritesCubit extends Cubit<List<ProductModel>> {
   FavoritesCubit() : super([]);
 
-  final _firestore = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
+  void toggleFavorite(ProductModel product) {
+    final favorites = List<ProductModel>.from(state);
 
-  String get uid => _auth.currentUser!.uid;
-
-  Future<void> loadFavorites() async {
-    final snapshot =
-        await _firestore
-            .collection('users')
-            .doc(uid)
-            .collection('favorites')
-            .get();
-
-    emit(snapshot.docs.map((e) => e.data()).toList());
-  }
-
-  Future<void> toggleFavorite(Map<String, dynamic> product) async {
-    final doc = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('favorites')
-        .doc(product['id'].toString());
-
-    final exists = (await doc.get()).exists;
-
-    if (exists) {
-      await doc.delete();
+    if (favorites.contains(product)) {
+      favorites.remove(product);
     } else {
-      await doc.set(product);
+      favorites.add(product);
     }
 
-    loadFavorites();
+    emit(favorites);
   }
 
-  bool isFavorite(int id) {
-    return state.any((e) => e['id'] == id);
+  bool isFavorite(ProductModel product) {
+    return state.contains(product);
   }
 }
