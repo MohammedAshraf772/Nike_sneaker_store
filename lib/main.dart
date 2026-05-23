@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nike_sneaker_store/core/cubit/theme_cubit.dart';
 
 import 'firebase_options.dart';
 
@@ -69,7 +70,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => CartCubit()),
 
         BlocProvider(create: (_) => FavoritesCubit()),
+
         BlocProvider(create: (_) => ProfileCubit()),
+
+        BlocProvider(create: (_) => ThemeCubit()),
       ],
 
       child: MaterialApp(
