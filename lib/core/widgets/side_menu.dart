@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +15,6 @@ import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
 import 'package:nike_sneaker_store/features/favourates/presentation/screens/favorites_screen.dart';
 
 import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_cubit.dart';
-import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_state.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -52,7 +53,7 @@ class SideMenu extends StatelessWidget {
 
                             backgroundImage:
                                 profileState.image.isNotEmpty
-                                    ? NetworkImage(profileState.image)
+                                    ? FileImage(File(profileState.image))
                                     : null,
 
                             child:
