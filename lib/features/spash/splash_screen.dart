@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
               children: [
                 Hero(
                   tag: "nike_logo",
-                  child: Image.asset('assets/images/logo.png', width: 170),
+                  child: Image.asset('assets/images/Vector.png', width: 170),
                 ),
 
                 const SizedBox(height: 24),

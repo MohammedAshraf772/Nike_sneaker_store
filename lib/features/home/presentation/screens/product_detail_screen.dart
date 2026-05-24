@@ -67,8 +67,19 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                       onPressed: () {
                         context.read<CartCubit>().addToCart(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green,
+
+                            behavior: SnackBarBehavior.floating,
+
+                            content: Text('${product.title} added to cart'),
+
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
                       },
-                      child: const Text(
+                      child: Text(
                         "Add To Cart",
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),

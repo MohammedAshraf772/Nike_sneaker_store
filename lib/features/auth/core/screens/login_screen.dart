@@ -90,19 +90,19 @@ class _LoginViewState extends State<_LoginView> {
   Widget _buildHeader() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Icon(Icons.sports_basketball, color: AppColors.primary, size: 60),
-        SizedBox(height: 24),
-        Text(
-          'Welcome\nBack 👋',
+      children: [
+        Image.asset('assets/images/Vector.png', width: 170),
+        const SizedBox(height: 24),
+        const Text(
+          'Welcome Back 👋',
           style: TextStyle(
             color: AppColors.white,
             fontSize: 36,
             fontWeight: FontWeight.w900,
           ),
         ),
-        SizedBox(height: 8),
-        Text(
+        const SizedBox(height: 8),
+        const Text(
           'Sign in to continue shopping',
           style: TextStyle(color: AppColors.textSecondary),
         ),
