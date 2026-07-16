@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
 
   const MyApp({
     super.key,
+
     required this.login,
     required this.register,
     required this.logout,

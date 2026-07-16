@@ -10,95 +10,117 @@ class CartCubit extends Cubit<CartState> {
 
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
-
   String get uid => _auth.currentUser!.uid;
 
+  Future<void> _handleError(dynamic e) async =>
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+
   Future<void> loadCart() async {
-    final snapshot =
-        await _firestore.collection('users').doc(uid).collection('cart').get();
-
-    final items =
-        snapshot.docs.map((e) => CartItemModel.fromJson(e.data())).toList();
-
-    emit(state.copyWith(items: items));
+    emit(state.copyWith(isLoading: true));
+    try {
+      final snapshot =
+          await _firestore
+              .collection('users')
+              .doc(uid)
+              .collection('cart')
+              .get();
+      final items =
+          snapshot.docs.map((e) => CartItemModel.fromJson(e.data())).toList();
+      emit(state.copyWith(items: items, isLoading: false));
+    } catch (e) {
+      await _handleError(e);
+    }
   }
 
   Future<void> addToCart(ProductModel product) async {
-    final doc = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('cart')
-        .doc(product.id.toString());
-
-    final snapshot = await doc.get();
-
-    if (snapshot.exists) {
-      final current = snapshot.data()!;
-      await doc.update({'quantity': current['quantity'] + 1});
-    } else {
-      await doc.set({
-        'id': product.id,
-        'title': product.title,
-        'image': product.image,
-        'price': product.price,
-        'category': product.category,
-        'quantity': 1,
-      });
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .doc(product.id.toString());
+      final doc = await docRef.get();
+      if (doc.exists) {
+        await docRef.update({'quantity': doc.data()!['quantity'] + 1});
+      } else {
+        await docRef.set({
+          'id': product.id,
+          'title': product.title,
+          'image': product.image,
+          'price': product.price,
+          'category': product.category,
+          'quantity': 1,
+        });
+      }
+      await loadCart();
+    } catch (e) {
+      await _handleError(e);
     }
-
-    await loadCart();
   }
 
   Future<void> removeFromCart(int productId) async {
-    await _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('cart')
-        .doc(productId.toString())
-        .delete();
-
-    await loadCart();
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .doc(productId.toString())
+          .delete();
+      await loadCart();
+    } catch (e) {
+      await _handleError(e);
+    }
   }
 
   Future<void> incrementQuantity(int productId) async {
-    final doc = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('cart')
-        .doc(productId.toString());
-
-    final data = (await doc.get()).data()!;
-    await doc.update({'quantity': data['quantity'] + 1});
-
-    await loadCart();
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .doc(productId.toString());
+      final data = (await docRef.get()).data()!;
+      await docRef.update({'quantity': data['quantity'] + 1});
+      await loadCart();
+    } catch (e) {
+      await _handleError(e);
+    }
   }
 
   Future<void> decrementQuantity(int productId) async {
-    final doc = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('cart')
-        .doc(productId.toString());
-
-    final data = (await doc.get()).data()!;
-
-    if (data['quantity'] == 1) {
-      await doc.delete();
-    } else {
-      await doc.update({'quantity': data['quantity'] - 1});
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .doc(productId.toString());
+      final data = (await docRef.get()).data()!;
+      if (data['quantity'] <= 1)
+        await docRef.delete();
+      else
+        await docRef.update({'quantity': data['quantity'] - 1});
+      await loadCart();
+    } catch (e) {
+      await _handleError(e);
     }
-
-    await loadCart();
   }
 
   Future<void> clearCart() async {
-    final snapshot =
-        await _firestore.collection('users').doc(uid).collection('cart').get();
-
-    for (var doc in snapshot.docs) {
-      await doc.reference.delete();
+    try {
+      final batch = _firestore.batch();
+      final snapshot =
+          await _firestore
+              .collection('users')
+              .doc(uid)
+              .collection('cart')
+              .get();
+      for (var doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+      emit(const CartState());
+    } catch (e) {
+      await _handleError(e);
     }
-
-    emit(const CartState());
   }
 }
