@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/core/contants/app_text_styles.dart';
 
 class AppTheme {
   AppTheme._();
 
   static ThemeData get darkTheme => ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF111111),
-    primaryColor: const Color(0xFFE63946),
-    colorScheme: const ColorScheme.dark(
-      primary: Color(0xFFE63946),
-      secondary: Color(0xFFFFD60A),
-      surface: Color(0xFF1E1E1E),
-      error: Color(0xFFE63946),
+    scaffoldBackgroundColor: AppColors.background,
+    primaryColor: AppColors.primary,
+    colorScheme: ColorScheme.dark(
+      primary: AppColors.primary,
+      secondary: AppColors.accent,
+      surface: AppColors.surface,
+      error: AppColors.error,
     ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF111111),
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColors.background,
       elevation: 0,
       centerTitle: true,
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: IconThemeData(color: AppColors.white),
+      titleTextStyle: AppTextStyles.headingMedium,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
@@ -26,38 +29,35 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFE63946),
-        foregroundColor: Colors.white,
-        minimumSize: const Size(double.infinity, 56),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.white,
+        minimumSize: Size(double.infinity, 56),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: AppTextStyles.labelLarge,
       ),
     ),
-    cardTheme: CardTheme(
-      color: const Color(0xFF2A2A2A),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    ),
-    dividerTheme: const DividerThemeData(
-      color: Color(0xFF2A2A2A),
-      thickness: 1,
-    ),
+
+    dividerTheme: DividerThemeData(color: AppColors.divider, thickness: 1),
   );
 
   static ThemeData get lightTheme => ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFF5F5F5),
-    primaryColor: const Color(0xFFE63946),
-    colorScheme: const ColorScheme.light(
-      primary: Color(0xFFE63946),
-      secondary: Color(0xFFFFD60A),
+    scaffoldBackgroundColor: Color(0xFFF5F5F5),
+    primaryColor: AppColors.primary,
+    colorScheme: ColorScheme.light(
+      primary: AppColors.primary,
+      secondary: AppColors.accent,
       surface: Colors.white,
-      error: Color(0xFFE63946),
+      error: AppColors.error,
     ),
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: Color(0xFFF5F5F5),
       elevation: 0,
       centerTitle: true,
       iconTheme: IconThemeData(color: Color(0xFF111111)),
+      titleTextStyle: AppTextStyles.headingMedium.copyWith(
+        color: Color(0xFF111111),
+      ),
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
@@ -65,20 +65,14 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFE63946),
-        foregroundColor: Colors.white,
-        minimumSize: const Size(double.infinity, 56),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.white,
+        minimumSize: Size(double.infinity, 56),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: AppTextStyles.labelLarge,
       ),
     ),
-    cardTheme: CardTheme(
-      color: Colors.white,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    ),
-    dividerTheme: const DividerThemeData(
-      color: Color(0xFFE0E0E0),
-      thickness: 1,
-    ),
+
+    dividerTheme: DividerThemeData(color: Color(0xFFE0E0E0), thickness: 1),
   );
 }
