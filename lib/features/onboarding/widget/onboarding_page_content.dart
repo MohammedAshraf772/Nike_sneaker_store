@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/contants/app_text_styles.dart';
+import 'animated_step_wrapper.dart';
 
 class OnboardingPageContent extends StatelessWidget {
   final Map<String, String> data;
@@ -21,6 +22,11 @@ class OnboardingPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final imageSlideAnim = Tween<Offset>(
+      begin: const Offset(0.3, 0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: animController, curve: Curves.easeOut));
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
@@ -28,9 +34,9 @@ class OnboardingPageContent extends StatelessWidget {
         children: [
           const SizedBox(height: 110),
 
-          // Tag Label
-          FadeTransition(
-            opacity: fadeAnim,
+          // Tag Badge
+          AnimatedStepWrapper(
+            fadeAnim: fadeAnim,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
@@ -49,19 +55,17 @@ class OnboardingPageContent extends StatelessWidget {
           ),
           const SizedBox(height: 18),
 
-          // Title Text
-          SlideTransition(
-            position: slideAnim,
-            child: FadeTransition(
-              opacity: fadeAnim,
-              child: Text(data['title']!, style: AppTextStyles.displayLarge),
-            ),
+          // Title
+          AnimatedStepWrapper(
+            fadeAnim: fadeAnim,
+            slideAnim: slideAnim,
+            child: Text(data['title']!, style: AppTextStyles.displayLarge),
           ),
           const SizedBox(height: 14),
 
-          // Subtitle Text
-          FadeTransition(
-            opacity: fadeAnim,
+          // Subtitle
+          AnimatedStepWrapper(
+            fadeAnim: fadeAnim,
             child: Text(
               data['subtitle']!,
               style: AppTextStyles.bodyMedium.copyWith(height: 1.7),
@@ -69,44 +73,34 @@ class OnboardingPageContent extends StatelessWidget {
           ),
           const SizedBox(height: 36),
 
-          // Product Image with dynamic slide direction
+          // Image View
           Expanded(
             child: Center(
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0.3, 0),
-                  end: Offset.zero,
-                ).animate(
-                  CurvedAnimation(
-                    parent: animController,
-                    curve: Curves.easeOut,
-                  ),
-                ),
-                child: FadeTransition(
-                  opacity: fadeAnim,
-                  child: Image.network(
-                    data['image']!,
-                    height: size.height * 0.3,
-                    fit: BoxFit.contain,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return SizedBox(
-                        height: size.height * 0.3,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 1.5,
-                            color: AppColors.primary,
-                          ),
+              child: AnimatedStepWrapper(
+                fadeAnim: fadeAnim,
+                slideAnim: imageSlideAnim,
+                child: Image.network(
+                  data['image']!,
+                  height: size.height * 0.3,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return SizedBox(
+                      height: size.height * 0.3,
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.5,
+                          color: AppColors.primary,
                         ),
-                      );
-                    },
-                    errorBuilder:
-                        (_, __, ___) => Icon(
-                          Icons.image_not_supported_outlined,
-                          size: 100,
-                          color: accentColor.withOpacity(0.4),
-                        ),
-                  ),
+                      ),
+                    );
+                  },
+                  errorBuilder:
+                      (_, __, ___) => Icon(
+                        Icons.image_not_supported_outlined,
+                        size: 100,
+                        color: accentColor.withOpacity(0.4),
+                      ),
                 ),
               ),
             ),

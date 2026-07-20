@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 
@@ -43,6 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     Timer(const Duration(seconds: 3), () {
       if (!mounted) return;
+      context.go('/onboarding');
 
       Navigator.pushReplacement(
         context,

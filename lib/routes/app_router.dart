@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'package:nike_sneaker_store/features/spash/splash_screen.dart';
 import '../features/auth/core/screens/login_screen.dart';
-import '../features/spash/splash_screen.dart';
 import '../features/onboarding/screen/onboarding_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 

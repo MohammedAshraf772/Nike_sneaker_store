@@ -7,7 +7,8 @@ import 'package:nike_sneaker_store/core/contants/app_text_styles.dart';
 import 'package:nike_sneaker_store/features/onboarding/widget/onboarding_background.dart';
 import 'package:nike_sneaker_store/features/onboarding/widget/onboarding_bottom_controls.dart';
 import 'package:nike_sneaker_store/features/onboarding/widget/onboarding_page_content.dart';
-import 'package:nike_sneaker_store/logic/onboarding/onboarding_cubit.dart';
+
+import '../../../logic/onboarding/onboarding_cubit.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -91,10 +92,8 @@ class _OnboardingViewState extends State<_OnboardingView>
           backgroundColor: AppColors.background,
           body: Stack(
             children: [
-              // 1. Dynamic Background Gradient
               OnboardingBackground(accentColor: accentColor),
 
-              // 2. Scrollable Pages
               PageView.builder(
                 controller: _pageController,
                 onPageChanged: _onPageChanged,
@@ -110,7 +109,6 @@ class _OnboardingViewState extends State<_OnboardingView>
                 },
               ),
 
-              // 3. Skip Button
               Positioned(
                 top: 56,
                 right: 24,
@@ -126,7 +124,6 @@ class _OnboardingViewState extends State<_OnboardingView>
                 ),
               ),
 
-              // 4. Bottom Navigation & Indicators
               Positioned(
                 bottom: 48,
                 left: 28,
