@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/cubit/theme_cubit.dart';
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
-import 'package:nike_sneaker_store/features/auth/core/screens/login_screen.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
-import 'package:nike_sneaker_store/features/favourates/presentation/screens/favorites_screen.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/widget/profile_menu_title.dart';
 
@@ -17,11 +15,17 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = AppColors.getBackground(context);
+    final textColor = AppColors.getTextPrimary(context);
+    final textSecondaryColor = AppColors.getTextSecondary(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
-        title: const Text("Profile"),
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        iconTheme: IconThemeData(color: textColor),
+        title: Text("Profile", style: TextStyle(color: textColor)),
       ),
       body: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, profileState) {
@@ -44,14 +48,17 @@ class ProfileView extends StatelessWidget {
                       children: [
                         Text(
                           name,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: textColor,
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 5),
-                        Text(email, style: const TextStyle(color: Colors.grey)),
+                        Text(
+                          email,
+                          style: TextStyle(color: textSecondaryColor),
+                        ),
                       ],
                     );
                   },
@@ -68,22 +75,12 @@ class ProfileView extends StatelessWidget {
                 ProfileMenuTile(
                   icon: Icons.favorite,
                   title: "Favorites",
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const FavoritesScreen(),
-                        ),
-                      ),
+                  onTap: () => context.push('/favorites'),
                 ),
                 ProfileMenuTile(
                   icon: Icons.shopping_cart,
                   title: "My Cart",
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const CartScreen()),
-                      ),
+                  onTap: () => context.push('/cart'),
                 ),
 
                 const Spacer(),
@@ -119,11 +116,7 @@ class ProfileView extends StatelessWidget {
   Future<void> _handleLogout(BuildContext context) async {
     await context.read<AuthCubit>().logout();
     if (context.mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-        (route) => false,
-      );
+      context.go('/login');
     }
   }
 }

@@ -17,26 +17,26 @@ class CartScreen extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.getBackground(context),
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.getBackground(context),
         appBar: AppBar(
           title: const Text('My Cart'),
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColors.getBackground(context),
         ),
         body: BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
             if (state.isLoading)
               return const Center(child: CircularProgressIndicator());
             if (state.items.isEmpty)
-              return const Center(
+              return Center(
                 child: Text(
                   "Cart is Empty",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: AppColors.getTextPrimary(context)),
                 ),
               );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/home/presentation/cubit/home_cubit.dart';
 import 'package:nike_sneaker_store/features/home/presentation/widget/home_app_bar.dart';
 import 'package:nike_sneaker_store/features/home/presentation/widget/home_categories.dart';
@@ -22,7 +23,7 @@ class HomeContent extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Text(
               '${state.products.length} Products Found',
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.getTextPrimary(context)),
             ),
           ),
         ),

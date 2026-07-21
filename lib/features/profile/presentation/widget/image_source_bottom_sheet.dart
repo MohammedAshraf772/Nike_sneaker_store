@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/widget/view_pohto_dialog.dart';
 
@@ -15,9 +16,9 @@ class ImageSourceBottomSheet extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.image, color: Colors.white),
-            title: const Text(
+            title: Text(
               'View Photo',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.getTextPrimary(context)),
             ),
             onTap: () {
               Navigator.pop(context);
@@ -29,9 +30,9 @@ class ImageSourceBottomSheet extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.photo_library, color: Colors.white),
-            title: const Text(
+            title: Text(
               'Choose from Gallery',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.getTextPrimary(context)),
             ),
             onTap: () {
               Navigator.pop(context);
@@ -40,9 +41,9 @@ class ImageSourceBottomSheet extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.camera_alt, color: Colors.white),
-            title: const Text(
+            title: Text(
               'Take Photo',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.getTextPrimary(context)),
             ),
             onTap: () {
               Navigator.pop(context);

@@ -31,6 +31,7 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       );
     } catch (e) {
+      if (isClosed) return;
       emit(HomeError(e.toString()));
     }
   }

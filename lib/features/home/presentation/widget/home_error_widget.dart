@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/home/presentation/cubit/home_cubit.dart';
 
 class HomeErrorWidget extends StatelessWidget {
@@ -13,7 +14,10 @@ class HomeErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(message, style: const TextStyle(color: Colors.white)),
+          Text(
+            message,
+            style: TextStyle(color: AppColors.getTextPrimary(context)),
+          ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {

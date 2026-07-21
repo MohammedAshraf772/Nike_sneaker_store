@@ -29,7 +29,7 @@ class _HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const SideMenu(),
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.getBackground(context),
       body: SafeArea(
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {

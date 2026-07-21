@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomeLoadingGrid extends StatelessWidget {
@@ -21,7 +22,7 @@ class HomeLoadingGrid extends StatelessWidget {
           highlightColor: Colors.grey[700]!,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.grey,
+              color: AppColors.getTextPrimary(context),
               borderRadius: BorderRadius.circular(16),
             ),
           ),

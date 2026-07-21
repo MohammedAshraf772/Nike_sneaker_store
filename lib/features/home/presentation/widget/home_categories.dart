@@ -32,13 +32,13 @@ class HomeCategories extends StatelessWidget {
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : AppColors.card,
+                  color: AppColors.getTextPrimary(context),
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
                   category,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.getTextPrimary(context),
                     fontWeight: FontWeight.bold,
                   ),
                 ),

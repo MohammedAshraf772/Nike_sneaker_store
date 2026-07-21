@@ -12,7 +12,7 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.getBackground(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -28,17 +28,19 @@ class ProductDetailScreen extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+              decoration: BoxDecoration(
+                color: AppColors.getTextPrimary(context),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(30),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     product.title,
-                    style: const TextStyle(
-                      color: AppColors.white,
+                    style: TextStyle(
+                      color: AppColors.getTextPrimary(context),
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -51,8 +53,8 @@ class ProductDetailScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   Text(
                     "\$${product.price}",
-                    style: const TextStyle(
-                      color: AppColors.primary,
+                    style: TextStyle(
+                      color: AppColors.getTextPrimary(context),
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
@@ -63,7 +65,7 @@ class ProductDetailScreen extends StatelessWidget {
                     height: 55,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColors.getBackground(context),
                       ),
                       onPressed: () {
                         context.read<CartCubit>().addToCart(product);
@@ -81,7 +83,10 @@ class ProductDetailScreen extends StatelessWidget {
                       },
                       child: Text(
                         "Add To Cart",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style: TextStyle(
+                          color: AppColors.getTextPrimary(context),
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ),

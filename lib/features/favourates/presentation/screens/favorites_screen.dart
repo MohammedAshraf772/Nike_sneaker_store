@@ -13,7 +13,7 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.getBackground(context),
 
       appBar: AppBar(
         backgroundColor: AppColors.background,
@@ -23,11 +23,11 @@ class FavoritesScreen extends StatelessWidget {
       body: BlocBuilder<FavoritesCubit, List<ProductModel>>(
         builder: (context, favorites) {
           if (favorites.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 "No Favorites Yet",
 
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: AppColors.getTextPrimary(context)),
               ),
             );
           }
@@ -44,7 +44,7 @@ class FavoritesScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
 
                 decoration: BoxDecoration(
-                  color: AppColors.card,
+                  color: AppColors.getTextPrimary(context),
 
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -67,8 +67,8 @@ class FavoritesScreen extends StatelessWidget {
 
                             overflow: TextOverflow.ellipsis,
 
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: AppColors.getTextPrimary(context),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -78,7 +78,9 @@ class FavoritesScreen extends StatelessWidget {
                           Text(
                             "\$${product.price}",
 
-                            style: const TextStyle(color: AppColors.primary),
+                            style: TextStyle(
+                              color: AppColors.getTextPrimary(context),
+                            ),
                           ),
                         ],
                       ),

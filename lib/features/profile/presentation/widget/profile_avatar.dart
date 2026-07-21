@@ -22,7 +22,7 @@ class ProfileAvatar extends StatelessWidget {
           },
           child: CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.grey.shade800,
+            backgroundColor: AppColors.getBackground(context),
             backgroundImage:
                 imagePath.isNotEmpty ? FileImage(File(imagePath)) : null,
             child:
