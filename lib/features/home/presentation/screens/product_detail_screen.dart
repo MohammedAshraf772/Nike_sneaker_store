@@ -37,7 +37,7 @@ class ProductDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  Text(  
                     product.title,
                     style: TextStyle(
                       color: AppColors.getTextPrimary(context),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/custom_text_field.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
 
@@ -33,7 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.primary,
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
@@ -70,7 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: AppColors.card,
+                        color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
@@ -80,10 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  /// 📝 Header
                   const Text(
                     'Create\nAccount ✨',
                     style: TextStyle(
@@ -93,36 +91,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 1.2,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   const Text(
                     'Sign up to start shopping',
-                    style: TextStyle(color: AppColors.textSecondary),
+                    style: TextStyle(color: AppColors.white),
                   ),
-
                   const SizedBox(height: 32),
-
-                  _buildTextField(
+                  CustomTextField(
                     controller: _nameController,
                     label: "Full Name",
-                    hint: "Mohamed Ashraf",
+                    hint: "Enter Your Name",
                     icon: Icons.person_outline,
                   ),
-
                   const SizedBox(height: 16),
-
-                  _buildTextField(
+                  CustomTextField(
                     controller: _emailController,
                     label: "Email",
                     hint: "email@gmail.com",
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                   ),
-
                   const SizedBox(height: 16),
-
-                  _buildTextField(
+                  CustomTextField(
                     controller: _passwordController,
                     label: "Password",
                     hint: "********",
@@ -137,14 +127,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscurePassword
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.textHint,
+                        color: AppColors.white,
                       ),
                     ),
                   ),
 
                   const SizedBox(height: 16),
 
-                  _buildTextField(
+                  CustomTextField(
                     controller: _confirmPasswordController,
                     label: "Confirm Password",
                     hint: "********",
@@ -161,14 +151,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscureConfirmPassword
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.textHint,
+                        color: AppColors.white,
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 32),
-
-                  /// 🚀 Register Button
                   GestureDetector(
                     onTap:
                         isLoading
@@ -196,7 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child:
                             isLoading
                                 ? const CircularProgressIndicator(
-                                  color: Colors.white,
+                                  color: AppColors.background,
                                 )
                                 : const Text(
                                   "Create Account",
@@ -211,20 +198,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const SizedBox(height: 24),
 
-                  /// 🔗 Login Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         "Already have an account? ",
-                        style: TextStyle(color: AppColors.textSecondary),
+                        style: TextStyle(color: AppColors.background),
                       ),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: const Text(
                           "Login",
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: AppColors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -239,47 +225,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    bool obscureText = false,
-    TextInputType keyboardType = TextInputType.text,
-    Widget? suffix,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: TextField(
-            controller: controller,
-            obscureText: obscureText,
-            keyboardType: keyboardType,
-            style: const TextStyle(color: AppColors.white),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: const TextStyle(color: AppColors.textHint),
-              prefixIcon: Icon(icon, color: AppColors.textHint),
-              suffixIcon: suffix,
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(16),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

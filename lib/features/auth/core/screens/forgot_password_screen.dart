@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/custom_text_field.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -44,10 +45,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
-        title: const Text("Forgot Password"),
-        backgroundColor: AppColors.background,
+        title: const Text(
+          "Forgot Password",
+          style: TextStyle(color: AppColors.white),
+        ),
+        backgroundColor: AppColors.primary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -57,25 +61,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
             const Text(
               "Enter your email to receive reset link",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.white),
             ),
 
             const SizedBox(height: 20),
 
-            TextField(
+            CustomTextField(
               controller: emailController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "email@example.com",
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: AppColors.card,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+              label: "",
+              hint: "emailController",
+              icon: Icons.email,
             ),
+            SizedBox(height: 20),
 
             const SizedBox(height: 30),
 
@@ -85,7 +82,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 height: 50,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AppColors.primaryDark,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(

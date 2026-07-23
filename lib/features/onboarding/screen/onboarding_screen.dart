@@ -89,7 +89,7 @@ class _OnboardingViewState extends State<_OnboardingView>
         final accentColor = _pageColors[state.currentPage];
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColors.primary,
           body: Stack(
             children: [
               OnboardingBackground(accentColor: accentColor),

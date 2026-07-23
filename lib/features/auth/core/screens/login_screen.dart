@@ -38,7 +38,7 @@ class _LoginViewState extends State<_LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.primary,
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
@@ -104,7 +104,7 @@ class _LoginViewState extends State<_LoginView> {
         const SizedBox(height: 8),
         const Text(
           'Sign in to continue shopping',
-          style: TextStyle(color: AppColors.textSecondary),
+          style: TextStyle(color: AppColors.white),
         ),
       ],
     );
@@ -131,7 +131,7 @@ class _LoginViewState extends State<_LoginView> {
         onTap: () => setState(() => _obscurePassword = !_obscurePassword),
         child: Icon(
           _obscurePassword ? Icons.visibility : Icons.visibility_off,
-          color: AppColors.textHint,
+          color: AppColors.white,
         ),
       ),
     );
@@ -147,7 +147,10 @@ class _LoginViewState extends State<_LoginView> {
             MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
           );
         },
-        child: const Text("Forgot Password"),
+        child: const Text(
+          "Forgot Password",
+          style: TextStyle(color: AppColors.white),
+        ),
       ),
     );
   }
@@ -166,7 +169,7 @@ class _LoginViewState extends State<_LoginView> {
       child: Container(
         height: 56,
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: AppColors.primaryDark,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
@@ -191,7 +194,7 @@ class _LoginViewState extends State<_LoginView> {
       children: [
         const Text(
           "Don't have an account?",
-          style: TextStyle(color: AppColors.textSecondary),
+          style: TextStyle(color: AppColors.white),
         ),
         const SizedBox(width: 5),
         GestureDetector(
@@ -204,7 +207,7 @@ class _LoginViewState extends State<_LoginView> {
           child: const Text(
             'Sign Up',
             style: TextStyle(
-              color: AppColors.primary,
+              color: AppColors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -225,18 +228,18 @@ class _LoginViewState extends State<_LoginView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.textSecondary)),
+        Text(label, style: const TextStyle(color: AppColors.white)),
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.card,
+            color: AppColors.white,
             borderRadius: BorderRadius.circular(12),
           ),
           child: TextField(
             controller: controller,
             obscureText: obscureText,
             keyboardType: keyboardType,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: AppColors.background),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: const TextStyle(color: AppColors.textHint),
