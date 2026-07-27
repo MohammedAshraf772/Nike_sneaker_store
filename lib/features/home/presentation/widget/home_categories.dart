@@ -38,7 +38,7 @@ class HomeCategories extends StatelessWidget {
                 child: Text(
                   category,
                   style: TextStyle(
-                    color: AppColors.getTextPrimary(context),
+                    color: AppColors.background,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
