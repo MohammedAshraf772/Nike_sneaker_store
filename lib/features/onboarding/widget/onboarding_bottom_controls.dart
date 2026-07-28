@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/core/contants/app_stringes.dart';
 import 'package:nike_sneaker_store/core/contants/app_text_styles.dart';
 import '../../../logic/onboarding/onboarding_cubit.dart';
 import 'animated_step_wrapper.dart';
 
 class OnboardingBottomControls extends StatelessWidget {
   final OnboardingState state;
+  final int totalPages;
   final Color accentColor;
   final Animation<double> fadeAnim;
   final Animation<Offset> slideAnim;
@@ -15,6 +15,7 @@ class OnboardingBottomControls extends StatelessWidget {
   const OnboardingBottomControls({
     super.key,
     required this.state,
+    required this.totalPages,
     required this.accentColor,
     required this.fadeAnim,
     required this.slideAnim,
@@ -31,7 +32,7 @@ class OnboardingBottomControls extends StatelessWidget {
         children: [
           Row(
             children: List.generate(
-              AppStrings.onboardingData.length,
+              totalPages,
               (i) => AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 margin: const EdgeInsets.only(right: 6),
@@ -59,7 +60,7 @@ class OnboardingBottomControls extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text: ' / 0${AppStrings.onboardingData.length}',
+                      text: ' / 0$totalPages',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.textHint,
                       ),

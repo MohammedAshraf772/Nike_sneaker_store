@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/core/contants/app_stringes.dart';
 import 'package:nike_sneaker_store/core/contants/app_text_styles.dart';
+import 'package:nike_sneaker_store/features/onboarding/data/onboarding_repository.dart';
 import 'package:nike_sneaker_store/features/onboarding/widget/onboarding_background.dart';
 import 'package:nike_sneaker_store/features/onboarding/widget/onboarding_bottom_controls.dart';
 import 'package:nike_sneaker_store/features/onboarding/widget/onboarding_page_content.dart';
@@ -15,15 +15,33 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OnboardingCubit(),
-      child: const _OnboardingView(),
+    return FutureBuilder<List<Map<String, String>>>(
+      future: OnboardingRepository().getOnboardingData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Scaffold(
+            backgroundColor: AppColors.primary,
+            body: Center(
+              child: CircularProgressIndicator(color: AppColors.white),
+            ),
+          );
+        }
+
+        final data = snapshot.data ?? [];
+
+        return BlocProvider(
+          create: (_) => OnboardingCubit(totalPages: data.length),
+          child: _OnboardingView(data: data),
+        );
+      },
     );
   }
 }
 
 class _OnboardingView extends StatefulWidget {
-  const _OnboardingView();
+  final List<Map<String, String>> data;
+
+  const _OnboardingView({required this.data});
 
   @override
   State<_OnboardingView> createState() => _OnboardingViewState();
@@ -86,7 +104,7 @@ class _OnboardingViewState extends State<_OnboardingView>
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, OnboardingState>(
       builder: (context, state) {
-        final accentColor = _pageColors[state.currentPage];
+        final accentColor = _pageColors[state.currentPage % _pageColors.length];
 
         return Scaffold(
           backgroundColor: AppColors.primary,
@@ -97,10 +115,10 @@ class _OnboardingViewState extends State<_OnboardingView>
               PageView.builder(
                 controller: _pageController,
                 onPageChanged: _onPageChanged,
-                itemCount: AppStrings.onboardingData.length,
+                itemCount: widget.data.length,
                 itemBuilder: (context, index) {
                   return OnboardingPageContent(
-                    data: AppStrings.onboardingData[index],
+                    data: widget.data[index],
                     accentColor: accentColor,
                     fadeAnim: _fadeAnim,
                     slideAnim: _slideAnim,
@@ -130,6 +148,7 @@ class _OnboardingViewState extends State<_OnboardingView>
                 right: 28,
                 child: OnboardingBottomControls(
                   state: state,
+                  totalPages: widget.data.length,
                   accentColor: accentColor,
                   fadeAnim: _fadeAnim,
                   slideAnim: _slideAnim,

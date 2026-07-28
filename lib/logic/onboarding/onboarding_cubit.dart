@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nike_sneaker_store/core/contants/app_stringes.dart';
 
 class OnboardingState extends Equatable {
   final int currentPage;
@@ -23,9 +22,11 @@ class OnboardingState extends Equatable {
 }
 
 class OnboardingCubit extends Cubit<OnboardingState> {
-  OnboardingCubit() : super(OnboardingState.initial());
+  OnboardingCubit({required int totalPages})
+    : _totalPages = totalPages,
+      super(OnboardingState.initial());
 
-  final int _totalPages = AppStrings.onboardingData.length;
+  final int _totalPages;
 
   void changePage(int index) {
     emit(
