@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nike_sneaker_store/features/checkout/data/model/order_model.dart';
+import 'package:nike_sneaker_store/features/checkout/data/models/order_model.dart';
 import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_state.dart';
 import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
