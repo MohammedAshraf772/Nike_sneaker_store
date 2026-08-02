@@ -55,5 +55,9 @@ class AuthRemoteDataSource {
     await auth.signOut();
   }
 
+  Future<void> forgotPassword(String email) async {
+    await auth.sendPasswordResetEmail(email: email);
+  }
+
   User? get currentUser => auth.currentUser;
 }
