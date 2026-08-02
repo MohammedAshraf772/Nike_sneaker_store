@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/cart/cubit/cart_cubit.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -29,7 +30,7 @@ class ProductDetailScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppColors.getTextPrimary(context),
+                color: AppColors.getCard(context),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(30),
                 ),
@@ -37,7 +38,7 @@ class ProductDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(  
+                  Text(
                     product.title,
                     style: TextStyle(
                       color: AppColors.getTextPrimary(context),
@@ -48,7 +49,9 @@ class ProductDetailScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     product.description,
-                    style: const TextStyle(color: AppColors.textSecondary),
+                    style: TextStyle(
+                      color: AppColors.getTextSecondary(context),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Text(
@@ -65,18 +68,37 @@ class ProductDetailScreen extends StatelessWidget {
                     height: 55,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.getBackground(context),
+                        backgroundColor: AppColors.primary,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CheckoutScreen(product: product),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Buy Now",
+                        style: TextStyle(color: AppColors.white, fontSize: 18),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.primary),
                       ),
                       onPressed: () {
                         context.read<CartCubit>().addToCart(product);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             backgroundColor: Colors.green,
-
                             behavior: SnackBarBehavior.floating,
-
                             content: Text('${product.title} added to cart'),
-
                             duration: const Duration(seconds: 2),
                           ),
                         );
