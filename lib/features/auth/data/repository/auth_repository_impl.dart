@@ -33,4 +33,9 @@ class AuthRepositoryImpl implements AuthRepository {
       name: user.email!.split('@')[0],
     );
   }
+
+  @override
+  Future<void> forgotPassword(String email) {
+    throw UnimplementedError();
+  }
 }
