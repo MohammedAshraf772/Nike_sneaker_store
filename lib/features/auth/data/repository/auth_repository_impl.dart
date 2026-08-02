@@ -23,6 +23,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> forgotPassword(String email) {
+    return remote.forgotPassword(email);
+  }
+
+  @override
   UserEntity? getCurrentUser() {
     final user = remote.currentUser;
     if (user == null) return null;
@@ -32,10 +37,5 @@ class AuthRepositoryImpl implements AuthRepository {
       email: user.email ?? '',
       name: user.email!.split('@')[0],
     );
-  }
-
-  @override
-  Future<void> forgotPassword(String email) {
-    throw UnimplementedError();
   }
 }
