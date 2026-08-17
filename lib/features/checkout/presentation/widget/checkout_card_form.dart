@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/core/utils/expiry_date_input_formatter.dart';
 
 class CheckoutCardForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -7,6 +9,8 @@ class CheckoutCardForm extends StatelessWidget {
   final TextEditingController cardController;
   final TextEditingController expiryController;
   final TextEditingController cvvController;
+  final VoidCallback onScanPressed;
+  final bool isScanning;
 
   const CheckoutCardForm({
     super.key,
@@ -15,6 +19,8 @@ class CheckoutCardForm extends StatelessWidget {
     required this.cardController,
     required this.expiryController,
     required this.cvvController,
+    required this.onScanPressed,
+    required this.isScanning,
   });
 
   @override
@@ -24,13 +30,30 @@ class CheckoutCardForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Card details',
-            style: TextStyle(
-              color: AppColors.getTextPrimary(context),
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Card details',
+                style: TextStyle(
+                  color: AppColors.getTextPrimary(context),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              TextButton.icon(
+                onPressed: isScanning ? null : onScanPressed,
+                icon:
+                    isScanning
+                        ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : const Icon(Icons.camera_alt_outlined, size: 18),
+                label: Text(isScanning ? 'Scanning...' : 'Scan card'),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -44,9 +67,10 @@ class CheckoutCardForm extends StatelessWidget {
             controller: cardController,
             keyboardType: TextInputType.number,
             maxLength: 16,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: const InputDecoration(
               labelText: 'Card number',
-              hintText: '4242424242424242',
+              hintText: '•••• •••• •••• ••••',
               counterText: '',
             ),
             validator:
@@ -61,7 +85,8 @@ class CheckoutCardForm extends StatelessWidget {
               Expanded(
                 child: TextFormField(
                   controller: expiryController,
-                  keyboardType: TextInputType.datetime,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [ExpiryDateInputFormatter()],
                   decoration: const InputDecoration(
                     labelText: 'MM/YY',
                     hintText: '12/28',
@@ -83,6 +108,7 @@ class CheckoutCardForm extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   maxLength: 3,
                   obscureText: true,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                     labelText: 'CVV',
                     counterText: '',

@@ -129,6 +129,8 @@ class _CheckoutViewState extends State<_CheckoutView> {
                   cardController: _cardController,
                   expiryController: _expiryController,
                   cvvController: _cvvController,
+                  isScanning: false,
+                  onScanPressed: () {},
                 ),
                 const SizedBox(height: 28),
                 CheckoutPayButton(

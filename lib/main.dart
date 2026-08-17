@@ -75,11 +75,9 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
 
-            // ثيم وضع النهار (الأبيض النظيف مع اللمسات الزرقاء)
             theme: ThemeData(
               brightness: Brightness.light,
-              scaffoldBackgroundColor:
-                  AppColors.lightBackground, // اللون الفاتح المريح
+              scaffoldBackgroundColor: AppColors.lightBackground,
               primaryColor: AppColors.primary,
               cardColor: AppColors.lightCard,
               colorScheme: ColorScheme.light(
@@ -103,7 +101,6 @@ class MyApp extends StatelessWidget {
               ),
             ),
 
-            // ثيم وضع الليل (الأسود الغامق الحالي)
             darkTheme: ThemeData(
               brightness: Brightness.dark,
               scaffoldBackgroundColor: AppColors.background,
