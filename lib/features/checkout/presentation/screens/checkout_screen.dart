@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/checkout/data/repository/order_repository_impl.dart';
+import 'package:nike_sneaker_store/features/checkout/data/services/card_scanner_service.dart';
 import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_cubit.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_state.dart';
@@ -42,13 +46,61 @@ class _CheckoutViewState extends State<_CheckoutView> {
   final _expiryController = TextEditingController();
   final _cvvController = TextEditingController();
 
+  final _cardScannerService = CardScannerService();
+  final _imagePicker = ImagePicker();
+  bool _isScanning = false;
+
   @override
   void dispose() {
     _nameController.dispose();
     _cardController.dispose();
     _expiryController.dispose();
     _cvvController.dispose();
+    _cardScannerService.dispose();
     super.dispose();
+  }
+
+  Future<void> _scanCard() async {
+    final pickedFile = await _imagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 90,
+    );
+
+    if (pickedFile == null || !mounted) return;
+
+    setState(() => _isScanning = true);
+
+    try {
+      final result = await _cardScannerService.scanImage(File(pickedFile.path));
+
+      if (!mounted) return;
+
+      if (result.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Couldn't read card details — try a clearer photo, or enter them manually",
+            ),
+          ),
+        );
+      } else {
+        if (result.cardNumber != null) {
+          _cardController.text = result.cardNumber!;
+        }
+        if (result.expiryDate != null) {
+          _expiryController.text = result.expiryDate!;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Card number and expiry filled in — please enter the cardholder name and CVV manually",
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isScanning = false);
+    }
   }
 
   void _submit(BuildContext context) {
@@ -129,8 +181,8 @@ class _CheckoutViewState extends State<_CheckoutView> {
                   cardController: _cardController,
                   expiryController: _expiryController,
                   cvvController: _cvvController,
-                  isScanning: false,
-                  onScanPressed: () {},
+                  isScanning: _isScanning,
+                  onScanPressed: _scanCard,
                 ),
                 const SizedBox(height: 28),
                 CheckoutPayButton(
