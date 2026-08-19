@@ -1,50 +1,40 @@
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class CardScanResult {
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+
+class ScannedCardData {
   final String? cardNumber;
   final String? expiryDate;
 
-  const CardScanResult({this.cardNumber, this.expiryDate});
+  const ScannedCardData({this.cardNumber, this.expiryDate});
+
+  bool get isEmpty => cardNumber == null && expiryDate == null;
 }
 
 class CardScannerService {
-  final ImagePicker _picker = ImagePicker();
   final TextRecognizer _recognizer = TextRecognizer(
     script: TextRecognitionScript.latin,
   );
-  Future<CardScanResult?> scanCard() async {
-    final photo = await _picker.pickImage(source: ImageSource.camera);
 
-    if (photo == null) return null;
-
-    final inputImage = InputImage.fromFilePath(photo.path);
+  Future<ScannedCardData> scanImage(File imageFile) async {
+    final inputImage = InputImage.fromFile(imageFile);
     final recognizedText = await _recognizer.processImage(inputImage);
 
-    final rawText = recognizedText.text;
-
-    return CardScanResult(
-      cardNumber: _extractCardNumber(rawText),
-      expiryDate: _extractExpiryDate(rawText),
+    return ScannedCardData(
+      cardNumber: _extractCardNumber(recognizedText.text),
+      expiryDate: _extractExpiryDate(recognizedText.text),
     );
   }
 
   String? _extractCardNumber(String text) {
-    final match = RegExp(
-      r'\b(?:\d[ -]?){16}\b',
-    ).firstMatch(text.replaceAll(RegExp(r'[^0-9 \n]'), ' '));
-
-    if (match == null) return null;
-
-    return match.group(0)!.replaceAll(RegExp(r'[^0-9]'), '');
+    final digitsOnly = text.replaceAll(RegExp(r'[^0-9]'), '');
+    final match = RegExp(r'\d{16}').firstMatch(digitsOnly);
+    return match?.group(0);
   }
 
   String? _extractExpiryDate(String text) {
-    final match = RegExp(r'(0[1-9]|1[0-2])[\/\- ](\d{2})\b').firstMatch(text);
-
-    if (match == null) return null;
-
-    return '${match.group(1)}/${match.group(2)}';
+    final match = RegExp(r'(0[1-9]|1[0-2])\s*/\s*\d{2}\b').firstMatch(text);
+    return match?.group(0)?.replaceAll(RegExp(r'\s+'), '');
   }
 
   void dispose() {
