@@ -25,6 +25,32 @@ class CheckoutProductSummary extends StatelessWidget {
             width: 64,
             height: 64,
             fit: BoxFit.cover,
+            loadingBuilder: (context, child, progress) {
+              if (progress == null) return child;
+              return Container(
+                width: 64,
+                height: 64,
+                color: AppColors.getCard(context),
+                child: const Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 64,
+                height: 64,
+                color: AppColors.getCard(context),
+                child: Icon(
+                  Icons.image_not_supported_outlined,
+                  color: AppColors.getTextSecondary(context),
+                ),
+              );
+            },
           ),
         ),
         const SizedBox(width: 12),
