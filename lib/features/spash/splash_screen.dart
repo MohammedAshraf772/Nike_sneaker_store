@@ -1,20 +1,30 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/logic/splash/splash_cubit.dart';
 
-import 'package:nike_sneaker_store/features/auth/core/screens/login_screen.dart';
-
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => SplashCubit()..init(),
+      child: const _SplashView(),
+    );
+  }
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashView extends StatefulWidget {
+  const _SplashView();
+
+  @override
+  State<_SplashView> createState() => _SplashViewState();
+}
+
+class _SplashViewState extends State<_SplashView>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
 
@@ -41,23 +51,6 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
 
     controller.forward();
-
-    Timer(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      context.go('/onboarding');
-
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 800),
-          pageBuilder:
-              (_, animation, __) => FadeTransition(
-                opacity: animation,
-                child: const LoginScreen(),
-              ),
-        ),
-      );
-    });
   }
 
   @override
@@ -68,33 +61,42 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primary,
-      body: Center(
-        child: FadeTransition(
-          opacity: fadeAnimation,
-          child: ScaleTransition(
-            scale: scaleAnimation,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Hero(
-                  tag: "nike_logo",
-                  child: Image.asset('assets/images/Vector.png', width: 170),
-                ),
-
-                const SizedBox(height: 24),
-
-                Text(
-                  "NIKE SNEAKER STORE",
-                  style: TextStyle(
-                    color: AppColors.getTextPrimary(context),
-                    fontSize: 20,
-                    letterSpacing: 2,
-                    fontWeight: FontWeight.bold,
+    return BlocListener<SplashCubit, SplashStatus>(
+      listener: (context, status) {
+        if (status == SplashStatus.authenticated) {
+          context.go('/home');
+        } else if (status == SplashStatus.unauthenticated) {
+          context.go('/onboarding');
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.primary,
+        body: Center(
+          child: FadeTransition(
+            opacity: fadeAnimation,
+            child: ScaleTransition(
+              scale: scaleAnimation,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Hero(
+                    tag: "nike_logo",
+                    child: Image.asset('assets/images/Vector.png', width: 170),
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 24),
+
+                  Text(
+                    "NIKE SNEAKER STORE",
+                    style: TextStyle(
+                      color: AppColors.getTextPrimary(context),
+                      fontSize: 20,
+                      letterSpacing: 2,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
