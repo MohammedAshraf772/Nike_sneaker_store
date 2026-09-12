@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:nike_sneaker_store/core/services/storage_service.dart';
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
 
 import 'package:nike_sneaker_store/features/auth/domain/usecses/login.dart';
@@ -20,6 +21,8 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthLoading());
 
       final user = await loginUseCase(email, password);
+
+      await StorageService.saveUser(name: user.name, email: user.email);
 
       emit(AuthAuthenticated(name: user.name, email: user.email));
     } on FirebaseAuthException catch (e) {
@@ -43,12 +46,11 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthLoading());
 
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      final user = await registerUseCase(name, email, password);
 
-      await credential.user!.updateDisplayName(name);
+      await StorageService.saveUser(name: user.name, email: user.email);
 
-      emit(AuthAuthenticated(name: name, email: email));
+      emit(AuthAuthenticated(name: user.name, email: user.email));
     } on FirebaseAuthException catch (e) {
       emit(AuthError(e.message ?? "Register failed"));
     } catch (e) {
@@ -59,22 +61,9 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     try {
       await logoutUseCase();
+      await StorageService.clearUser();
 
       emit(AuthUnauthenticated());
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
-  }
-
-  Future<void> resetPassword(String email) async {
-    try {
-      emit(AuthLoading());
-
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-
-      emit(AuthUnauthenticated());
-    } on FirebaseAuthException catch (e) {
-      emit(AuthError(e.message ?? "Reset password failed"));
     } catch (e) {
       emit(AuthError(e.toString()));
     }
