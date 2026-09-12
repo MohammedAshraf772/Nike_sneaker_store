@@ -17,22 +17,17 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-
       child: Container(
         padding: const EdgeInsets.all(12),
-
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: AppColors.getCard(context),
           borderRadius: BorderRadius.circular(20),
         ),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
             Align(
               alignment: Alignment.topRight,
-
               child: BlocBuilder<FavoritesCubit, List<ProductModel>>(
                 builder: (context, favorites) {
                   final isFavorite = context.read<FavoritesCubit>().isFavorite(
@@ -43,13 +38,10 @@ class ProductCard extends StatelessWidget {
                     onTap: () {
                       context.read<FavoritesCubit>().toggleFavorite(product);
                     },
-
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-
                       child: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-
                         color: Colors.red,
                       ),
                     ),
@@ -57,35 +49,50 @@ class ProductCard extends StatelessWidget {
                 },
               ),
             ),
-
             Expanded(
               child: Hero(
                 tag: "product_${product.id}",
-
-                child: Image.network(product.image),
+                child: Image.network(
+                  product.image,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.getTextSecondary(context),
+                        ),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(
+                      child: Icon(
+                        Icons.image_not_supported_outlined,
+                        color: AppColors.getTextSecondary(context),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-
             const SizedBox(height: 10),
-
             Text(
               product.title,
-
               maxLines: 1,
-
               overflow: TextOverflow.ellipsis,
-
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.getTextPrimary(context),
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 6),
-
             Text(
               "\$${product.price}",
-
               style: const TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,
