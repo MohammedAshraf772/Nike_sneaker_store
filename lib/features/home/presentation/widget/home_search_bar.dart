@@ -13,7 +13,7 @@ class HomeSearchBar extends StatelessWidget {
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: AppColors.getTextPrimary(context),
+          color: AppColors.getCard(context),
           borderRadius: BorderRadius.circular(12),
         ),
         child: TextField(
@@ -21,10 +21,10 @@ class HomeSearchBar extends StatelessWidget {
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: 'Search products...',
-            hintStyle: TextStyle(color: AppColors.getTextPrimary(context)),
+            hintStyle: TextStyle(color: AppColors.getTextSecondary(context)),
             prefixIcon: Icon(
               Icons.search,
-              color: AppColors.getTextPrimary(context),
+              color: AppColors.getTextSecondary(context),
             ),
           ),
           onChanged: (value) {
