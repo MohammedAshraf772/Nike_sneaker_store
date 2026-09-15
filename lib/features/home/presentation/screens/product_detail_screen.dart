@@ -4,6 +4,7 @@ import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/cart/cubit/cart_cubit.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
+import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -74,7 +75,15 @@ class ProductDetailScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => CheckoutScreen(product: product),
+                            builder:
+                                (_) => CheckoutScreen(
+                                  items: [
+                                    CartItemModel(
+                                      product: product,
+                                      quantity: 1,
+                                    ),
+                                  ],
+                                ),
                           ),
                         );
                       },

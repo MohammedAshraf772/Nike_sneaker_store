@@ -1,26 +1,16 @@
-class OrderModel {
+class OrderLineItem {
   final String productId;
   final String productTitle;
   final String productImage;
   final double unitPrice;
   final int quantity;
-  final double totalPrice;
-  final String cardHolderName;
-  final String last4;
-  final String status;
-  final DateTime createdAt;
 
-  const OrderModel({
+  const OrderLineItem({
     required this.productId,
     required this.productTitle,
     required this.productImage,
     required this.unitPrice,
     required this.quantity,
-    required this.totalPrice,
-    required this.cardHolderName,
-    required this.last4,
-    required this.status,
-    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -30,6 +20,30 @@ class OrderModel {
       'productImage': productImage,
       'unitPrice': unitPrice,
       'quantity': quantity,
+    };
+  }
+}
+
+class OrderModel {
+  final List<OrderLineItem> items;
+  final double totalPrice;
+  final String cardHolderName;
+  final String last4;
+  final String status; // 'success' or 'failed'
+  final DateTime createdAt;
+
+  const OrderModel({
+    required this.items,
+    required this.totalPrice,
+    required this.cardHolderName,
+    required this.last4,
+    required this.status,
+    required this.createdAt,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'items': items.map((item) => item.toMap()).toList(),
       'totalPrice': totalPrice,
       'cardHolderName': cardHolderName,
       'last4': last4,

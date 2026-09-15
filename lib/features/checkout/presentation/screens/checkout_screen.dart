@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 import 'package:nike_sneaker_store/features/checkout/data/repository/order_repository_impl.dart';
 import 'package:nike_sneaker_store/features/checkout/data/services/card_scanner_service.dart';
 import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
@@ -12,28 +13,27 @@ import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_card_form.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_pay_button.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_product_summary.dart';
-import 'package:nike_sneaker_store/features/home/data/models/product_model.dart';
 
 class CheckoutScreen extends StatelessWidget {
-  final ProductModel product;
-  final int quantity;
+  final List<CartItemModel> items;
+  final VoidCallback? onSuccess;
 
-  const CheckoutScreen({super.key, required this.product, this.quantity = 1});
+  const CheckoutScreen({super.key, required this.items, this.onSuccess});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CheckoutCubit(PlaceOrder(OrderRepositoryImpl())),
-      child: _CheckoutView(product: product, quantity: quantity),
+      child: _CheckoutView(items: items, onSuccess: onSuccess),
     );
   }
 }
 
 class _CheckoutView extends StatefulWidget {
-  final ProductModel product;
-  final int quantity;
+  final List<CartItemModel> items;
+  final VoidCallback? onSuccess;
 
-  const _CheckoutView({required this.product, required this.quantity});
+  const _CheckoutView({required this.items, this.onSuccess});
 
   @override
   State<_CheckoutView> createState() => _CheckoutViewState();
@@ -107,8 +107,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
     if (!_formKey.currentState!.validate()) return;
 
     context.read<CheckoutCubit>().pay(
-      product: widget.product,
-      quantity: widget.quantity,
+      items: widget.items,
       cardHolderName: _nameController.text,
       cardNumber: _cardController.text,
       expiryDate: _expiryController.text,
@@ -117,6 +116,8 @@ class _CheckoutViewState extends State<_CheckoutView> {
   }
 
   void _onSuccess(BuildContext context, CheckoutSuccess state) {
+    widget.onSuccess?.call();
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -129,9 +130,8 @@ class _CheckoutViewState extends State<_CheckoutView> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(); // close dialog
+                  Navigator.of(context).pop(); // back to previous screen
                 },
                 child: const Text('Done'),
               ),
@@ -142,7 +142,10 @@ class _CheckoutViewState extends State<_CheckoutView> {
 
   @override
   Widget build(BuildContext context) {
-    final total = widget.product.price * widget.quantity;
+    final total = widget.items.fold<double>(
+      0,
+      (sum, item) => sum + item.totalPrice,
+    );
 
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
@@ -169,11 +172,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CheckoutProductSummary(
-                  product: widget.product,
-                  quantity: widget.quantity,
-                  totalPrice: total,
-                ),
+                CheckoutProductSummary(items: widget.items),
                 const SizedBox(height: 28),
                 CheckoutCardForm(
                   formKey: _formKey,
