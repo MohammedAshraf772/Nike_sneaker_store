@@ -20,13 +20,16 @@ class ProfileMenuTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: AppColors.getCard(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
         onTap: onTap,
-        leading: Icon(icon, color: Colors.white),
-        title: Text(title, style: const TextStyle(color: Colors.white)),
+        leading: Icon(icon, color: AppColors.getTextPrimary(context)),
+        title: Text(
+          title,
+          style: TextStyle(color: AppColors.getTextPrimary(context)),
+        ),
         trailing: trailing,
       ),
     );
