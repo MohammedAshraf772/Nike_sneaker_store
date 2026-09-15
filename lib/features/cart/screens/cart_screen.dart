@@ -5,6 +5,7 @@ import 'package:nike_sneaker_store/features/cart/cubit/cart_cubit.dart';
 import 'package:nike_sneaker_store/features/cart/cubit/cart_state.dart';
 import 'package:nike_sneaker_store/features/cart/widget/cart_item_widget.dart';
 import 'package:nike_sneaker_store/features/cart/widget/order_summary_widget.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/screens/checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -53,7 +54,19 @@ class CartScreen extends StatelessWidget {
                 ),
                 OrderSummaryWidget(
                   state: state,
-                  onCheckout: () => context.read<CartCubit>().clearCart(),
+                  onCheckout: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => CheckoutScreen(
+                              items: state.items,
+                              onSuccess:
+                                  () => context.read<CartCubit>().clearCart(),
+                            ),
+                      ),
+                    );
+                  },
                 ),
               ],
             );
