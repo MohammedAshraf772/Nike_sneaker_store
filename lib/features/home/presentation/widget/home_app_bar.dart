@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/core/widgets/cart_icon_button.dart';
 import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/screens/profile_screen.dart';
 
@@ -33,11 +34,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     Scaffold.of(context).openDrawer();
                   },
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: AppColors.getTextPrimary(context),
-                  ),
+                CartIconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
