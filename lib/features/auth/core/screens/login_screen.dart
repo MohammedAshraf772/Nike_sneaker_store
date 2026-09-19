@@ -38,7 +38,7 @@ class _LoginViewState extends State<_LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.getBackground(context),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
@@ -67,13 +67,13 @@ class _LoginViewState extends State<_LoginView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 60),
-                  _buildHeader(),
+                  _buildHeader(context),
                   const SizedBox(height: 48),
-                  _buildEmailField(),
+                  _buildEmailField(context),
                   const SizedBox(height: 16),
-                  _buildPasswordField(),
+                  _buildPasswordField(context),
                   const SizedBox(height: 12),
-                  _buildForgotPassword(),
+                  _buildForgotPassword(context),
                   const SizedBox(height: 32),
                   _buildLoginButton(context, isLoading),
                   const SizedBox(height: 24),
@@ -87,31 +87,32 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Image.asset('assets/images/Vector.png', width: 170),
         const SizedBox(height: 24),
-        const Text(
+        Text(
           'Welcome Back 👋',
           style: TextStyle(
-            color: AppColors.white,
+            color: AppColors.getTextPrimary(context),
             fontSize: 36,
             fontWeight: FontWeight.w900,
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
+        Text(
           'Sign in to continue shopping',
-          style: TextStyle(color: AppColors.white),
+          style: TextStyle(color: AppColors.getTextSecondary(context)),
         ),
       ],
     );
   }
 
-  Widget _buildEmailField() {
+  Widget _buildEmailField(BuildContext context) {
     return _buildTextField(
+      context: context,
       controller: _emailController,
       label: 'Email',
       hint: 'your@email.com',
@@ -120,8 +121,9 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(BuildContext context) {
     return _buildTextField(
+      context: context,
       controller: _passwordController,
       label: 'Password',
       hint: '••••••••',
@@ -131,13 +133,13 @@ class _LoginViewState extends State<_LoginView> {
         onTap: () => setState(() => _obscurePassword = !_obscurePassword),
         child: Icon(
           _obscurePassword ? Icons.visibility : Icons.visibility_off,
-          color: AppColors.textHint,
+          color: AppColors.getTextSecondary(context),
         ),
       ),
     );
   }
 
-  Widget _buildForgotPassword() {
+  Widget _buildForgotPassword(BuildContext context) {
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
@@ -147,9 +149,9 @@ class _LoginViewState extends State<_LoginView> {
             MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
           );
         },
-        child: const Text(
+        child: Text(
           "Forgot Password",
-          style: TextStyle(color: AppColors.white),
+          style: TextStyle(color: AppColors.getTextPrimary(context)),
         ),
       ),
     );
@@ -192,9 +194,9 @@ class _LoginViewState extends State<_LoginView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
+        Text(
           "Don't have an account?",
-          style: TextStyle(color: AppColors.white),
+          style: TextStyle(color: AppColors.getTextSecondary(context)),
         ),
         const SizedBox(width: 5),
         GestureDetector(
@@ -204,10 +206,10 @@ class _LoginViewState extends State<_LoginView> {
               MaterialPageRoute(builder: (_) => const RegisterScreen()),
             );
           },
-          child: const Text(
+          child: Text(
             'Sign Up',
             style: TextStyle(
-              color: AppColors.white,
+              color: AppColors.getTextPrimary(context),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -217,6 +219,7 @@ class _LoginViewState extends State<_LoginView> {
   }
 
   Widget _buildTextField({
+    required BuildContext context,
     required TextEditingController controller,
     required String label,
     required String hint,
@@ -228,22 +231,25 @@ class _LoginViewState extends State<_LoginView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.white)),
+        Text(label, style: TextStyle(color: AppColors.getTextPrimary(context))),
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.getCard(context),
             borderRadius: BorderRadius.circular(12),
           ),
           child: TextField(
             controller: controller,
             obscureText: obscureText,
             keyboardType: keyboardType,
-            style: const TextStyle(color: AppColors.background),
+            style: TextStyle(color: AppColors.getTextPrimary(context)),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(color: AppColors.textHint),
-              prefixIcon: Icon(icon, color: AppColors.textHint),
+              hintStyle: TextStyle(color: AppColors.getTextSecondary(context)),
+              prefixIcon: Icon(
+                icon,
+                color: AppColors.getTextSecondary(context),
+              ),
               suffixIcon: suffix,
               border: InputBorder.none,
             ),
