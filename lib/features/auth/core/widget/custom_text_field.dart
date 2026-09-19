@@ -28,23 +28,29 @@ class CustomTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(color: AppColors.white, fontSize: 13),
+          style: TextStyle(
+            color: AppColors.getTextPrimary(context),
+            fontSize: 13,
+          ),
         ),
         const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.getCard(context),
             borderRadius: BorderRadius.circular(12),
           ),
           child: TextField(
             controller: controller,
             obscureText: obscureText,
             keyboardType: keyboardType,
-            style: const TextStyle(color: AppColors.background),
+            style: TextStyle(color: AppColors.getTextPrimary(context)),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(color: AppColors.background),
-              prefixIcon: Icon(icon, color: AppColors.background),
+              hintStyle: TextStyle(color: AppColors.getTextSecondary(context)),
+              prefixIcon: Icon(
+                icon,
+                color: AppColors.getTextSecondary(context),
+              ),
               suffixIcon: suffix,
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
