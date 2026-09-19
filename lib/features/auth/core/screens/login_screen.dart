@@ -131,7 +131,7 @@ class _LoginViewState extends State<_LoginView> {
         onTap: () => setState(() => _obscurePassword = !_obscurePassword),
         child: Icon(
           _obscurePassword ? Icons.visibility : Icons.visibility_off,
-          color: AppColors.white,
+          color: AppColors.textHint,
         ),
       ),
     );
