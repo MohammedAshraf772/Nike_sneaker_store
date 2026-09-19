@@ -127,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscurePassword
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.white,
+                        color: AppColors.textHint,
                       ),
                     ),
                   ),
@@ -151,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscureConfirmPassword
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.white,
+                        color: AppColors.textHint,
                       ),
                     ),
                   ),
