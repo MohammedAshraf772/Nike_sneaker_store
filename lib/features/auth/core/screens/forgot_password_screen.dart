@@ -51,13 +51,13 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.getBackground(context),
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Forgot Password",
-          style: TextStyle(color: AppColors.white),
+          style: TextStyle(color: AppColors.getTextPrimary(context)),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.getBackground(context),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
