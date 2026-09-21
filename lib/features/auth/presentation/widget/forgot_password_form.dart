@@ -20,9 +20,9 @@ class ForgotPasswordForm extends StatelessWidget {
       children: [
         const SizedBox(height: 20),
 
-        const Text(
+        Text(
           "Enter your email to receive reset link",
-          style: TextStyle(color: AppColors.white),
+          style: TextStyle(color: AppColors.getTextSecondary(context)),
         ),
 
         const SizedBox(height: 20),
