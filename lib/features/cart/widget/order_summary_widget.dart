@@ -19,24 +19,36 @@ class OrderSummaryWidget extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: AppColors.getCard(context),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         children: [
-          _buildRow('Subtotal', '\$${state.totalPrice.toStringAsFixed(2)}'),
+          _buildRow(
+            context,
+            'Subtotal',
+            '\$${state.totalPrice.toStringAsFixed(2)}',
+          ),
           const SizedBox(height: 10),
           _buildRow(
+            context,
             'Shipping',
             shipping == 0 ? 'FREE' : '\$${shipping.toStringAsFixed(2)}',
             color: shipping == 0 ? const Color(0xFF2A9D8F) : null,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
-            child: Divider(color: AppColors.divider),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Divider(
+              color: AppColors.getTextSecondary(context).withOpacity(0.3),
+            ),
           ),
-          _buildRow('Total', '\$${total.toStringAsFixed(2)}', isTotal: true),
+          _buildRow(
+            context,
+            'Total',
+            '\$${total.toStringAsFixed(2)}',
+            isTotal: true,
+          ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: onCheckout,
@@ -61,6 +73,7 @@ class OrderSummaryWidget extends StatelessWidget {
   }
 
   Widget _buildRow(
+    BuildContext context,
     String label,
     String value, {
     bool isTotal = false,
@@ -72,7 +85,10 @@ class OrderSummaryWidget extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: isTotal ? AppColors.white : AppColors.textSecondary,
+            color:
+                isTotal
+                    ? AppColors.getTextPrimary(context)
+                    : AppColors.getTextSecondary(context),
             fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -81,7 +97,9 @@ class OrderSummaryWidget extends StatelessWidget {
           style: TextStyle(
             color:
                 color ??
-                (isTotal ? AppColors.primary : AppColors.textSecondary),
+                (isTotal
+                    ? AppColors.primary
+                    : AppColors.getTextSecondary(context)),
             fontWeight: FontWeight.bold,
             fontSize: isTotal ? 18 : 14,
           ),
