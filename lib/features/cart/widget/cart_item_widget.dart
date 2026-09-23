@@ -13,7 +13,7 @@ class CartItemWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: AppColors.getCard(context),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -23,7 +23,7 @@ class CartItemWidget extends StatelessWidget {
             child: Container(
               width: 80,
               height: 80,
-              color: AppColors.surface,
+              color: AppColors.getCard(context),
               child: Image.network(item.product.image, fit: BoxFit.cover),
             ),
           ),
@@ -34,8 +34,8 @@ class CartItemWidget extends StatelessWidget {
               children: [
                 Text(
                   item.product.category.toUpperCase(),
-                  style: const TextStyle(
-                    color: AppColors.textHint,
+                  style: TextStyle(
+                    color: AppColors.getTextSecondary(context),
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
@@ -44,8 +44,8 @@ class CartItemWidget extends StatelessWidget {
                   item.product.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.white,
+                  style: TextStyle(
+                    color: AppColors.getTextPrimary(context),
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
@@ -86,6 +86,7 @@ class CartItemWidget extends StatelessWidget {
               Row(
                 children: [
                   _buildQuantityBtn(
+                    context,
                     Icons.remove_rounded,
                     () => context.read<CartCubit>().decrementQuantity(
                       item.product.id,
@@ -95,14 +96,15 @@ class CartItemWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       '${item.quantity}',
-                      style: const TextStyle(
-                        color: AppColors.white,
+                      style: TextStyle(
+                        color: AppColors.getTextPrimary(context),
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
                   _buildQuantityBtn(
+                    context,
                     Icons.add_rounded,
                     () => context.read<CartCubit>().incrementQuantity(
                       item.product.id,
@@ -117,17 +119,21 @@ class CartItemWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildQuantityBtn(IconData icon, VoidCallback onTap) {
+  Widget _buildQuantityBtn(
+    BuildContext context,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 28,
         height: 28,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.getCard(context),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(icon, color: AppColors.white, size: 16),
+        child: Icon(icon, color: AppColors.getTextPrimary(context), size: 16),
       ),
     );
   }
