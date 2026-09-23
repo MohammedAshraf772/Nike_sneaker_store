@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
 import 'package:nike_sneaker_store/features/auth/core/widget/custom_text_field.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:nike_sneaker_store/features/home/presentation/screens/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -34,14 +34,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.getBackground(context),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
-            );
+            context.go('/home');
           }
 
           if (state is AuthError) {
@@ -63,38 +60,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 40),
-
-                  /// 🔙 Back Button
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: AppColors.getCard(context),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.white,
+                        color: AppColors.getTextPrimary(context),
                         size: 18,
                       ),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
+                  Text(
                     'Create\nAccount ✨',
                     style: TextStyle(
-                      color: AppColors.white,
+                      color: AppColors.getTextPrimary(context),
                       fontSize: 34,
                       fontWeight: FontWeight.w900,
                       height: 1.2,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     'Sign up to start shopping',
-                    style: TextStyle(color: AppColors.white),
+                    style: TextStyle(
+                      color: AppColors.getTextSecondary(context),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   CustomTextField(
@@ -127,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscurePassword
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.textHint,
+                        color: AppColors.getTextSecondary(context),
                       ),
                     ),
                   ),
@@ -151,7 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscureConfirmPassword
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.textHint,
+                        color: AppColors.getTextSecondary(context),
                       ),
                     ),
                   ),
@@ -183,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child:
                             isLoading
                                 ? const CircularProgressIndicator(
-                                  color: AppColors.background,
+                                  color: Colors.white,
                                 )
                                 : const Text(
                                   "Create Account",
@@ -201,16 +198,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         "Already have an account? ",
-                        style: TextStyle(color: AppColors.background),
+                        style: TextStyle(
+                          color: AppColors.getTextSecondary(context),
+                        ),
                       ),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: const Text(
+                        child: Text(
                           "Login",
                           style: TextStyle(
-                            color: AppColors.white,
+                            color: AppColors.getTextPrimary(context),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
