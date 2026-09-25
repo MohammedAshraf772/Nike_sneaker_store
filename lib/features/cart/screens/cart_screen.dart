@@ -31,15 +31,17 @@ class CartScreen extends StatelessWidget {
         ),
         body: BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
-            if (state.isLoading)
+            if (state.isLoading) {
               return const Center(child: CircularProgressIndicator());
-            if (state.items.isEmpty)
+            }
+            if (state.items.isEmpty) {
               return Center(
                 child: Text(
                   "Cart is Empty",
                   style: TextStyle(color: AppColors.getTextPrimary(context)),
                 ),
               );
+            }
 
             return Column(
               children: [
