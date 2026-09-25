@@ -16,8 +16,12 @@ class FavoritesScreen extends StatelessWidget {
       backgroundColor: AppColors.getBackground(context),
 
       appBar: AppBar(
-        backgroundColor: AppColors.background,
-        title: const Text("Favorites"),
+        backgroundColor: AppColors.getBackground(context),
+        title: Text(
+          "Favorites",
+          style: TextStyle(color: AppColors.getTextPrimary(context)),
+        ),
+        iconTheme: IconThemeData(color: AppColors.getTextPrimary(context)),
       ),
 
       body: BlocBuilder<FavoritesCubit, List<ProductModel>>(
@@ -44,14 +48,49 @@ class FavoritesScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
 
                 decoration: BoxDecoration(
-                  color: AppColors.getTextPrimary(context),
+                  color: AppColors.getCard(context),
 
                   borderRadius: BorderRadius.circular(16),
                 ),
 
                 child: Row(
                   children: [
-                    Image.network(product.image, width: 80, height: 80),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        product.image,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, progress) {
+                          if (progress == null) return child;
+                          return SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.getTextSecondary(context),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              color: AppColors.getTextSecondary(context),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
 
                     const SizedBox(width: 16),
 
@@ -78,9 +117,7 @@ class FavoritesScreen extends StatelessWidget {
                           Text(
                             "\$${product.price}",
 
-                            style: TextStyle(
-                              color: AppColors.getTextPrimary(context),
-                            ),
+                            style: const TextStyle(color: AppColors.primary),
                           ),
                         ],
                       ),
