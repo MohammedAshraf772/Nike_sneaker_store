@@ -9,10 +9,6 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   final PlaceOrder _placeOrder;
 
-  /// Simulates a card payment for one or more cart items. The raw
-  /// [cardNumber] and [cvv] are used only for local, on-device validation —
-  /// they are never sent anywhere or stored. Only the last 4 digits of the
-  /// card are kept, for the confirmation message and the order record.
   Future<void> pay({
     required List<CartItemModel> items,
     required String cardHolderName,
@@ -49,7 +45,6 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       return;
     }
 
-    // Simulate the network round-trip to a payment gateway.
     await Future.delayed(const Duration(seconds: 2));
 
     final last4 = digitsOnly.substring(digitsOnly.length - 4);
@@ -76,6 +71,10 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       last4: last4,
       status: 'success',
       createdAt: DateTime.now(),
+      subtotal: null,
+      shippingFee: null,
+      codFee: null,
+      paymentMethod: '',
     );
 
     try {
