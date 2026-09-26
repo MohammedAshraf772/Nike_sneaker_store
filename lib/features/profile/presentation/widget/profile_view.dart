@@ -7,7 +7,8 @@ import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:nike_sneaker_store/features/profile/presentation/widget/profile_menu_title.dart';
-
+import 'package:nike_sneaker_store/features/cart/screens/cart_screen.dart';
+import 'package:nike_sneaker_store/features/favourates/presentation/screens/favorites_screen.dart';
 import 'profile_avatar.dart';
 
 class ProfileView extends StatelessWidget {
@@ -75,12 +76,24 @@ class ProfileView extends StatelessWidget {
                 ProfileMenuTile(
                   icon: Icons.favorite,
                   title: "Favorites",
-                  onTap: () => context.push('/favorites'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const FavoritesScreen(),
+                      ),
+                    );
+                  },
                 ),
                 ProfileMenuTile(
                   icon: Icons.shopping_cart,
                   title: "My Cart",
-                  onTap: () => context.push('/cart'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const CartScreen()),
+                    );
+                  },
                 ),
 
                 const Spacer(),
