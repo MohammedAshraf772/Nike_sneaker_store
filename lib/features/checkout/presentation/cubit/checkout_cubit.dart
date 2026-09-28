@@ -1,87 +1,49 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
-import 'package:nike_sneaker_store/features/checkout/data/models/order_model.dart';
-import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
-import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_state.dart';
+import 'package:equatable/equatable.dart';
 
-class CheckoutCubit extends Cubit<CheckoutState> {
-  CheckoutCubit(this._placeOrder) : super(CheckoutInitial());
+abstract class CheckoutState extends Equatable {
+  const CheckoutState();
 
-  final PlaceOrder _placeOrder;
+  @override
+  List<Object?> get props => [];
+}
 
-  Future<void> pay({
-    required List<CartItemModel> items,
-    required String cardHolderName,
-    required String cardNumber,
-    required String expiryDate,
-    required String cvv,
-  }) async {
-    emit(CheckoutProcessing());
+class CheckoutInitial extends CheckoutState {}
 
-    if (items.isEmpty) {
-      emit(const CheckoutError('Your cart is empty'));
-      return;
-    }
+class CheckoutProcessing extends CheckoutState {}
 
-    final digitsOnly = cardNumber.replaceAll(RegExp(r'\s+'), '');
+class CheckoutSuccess extends CheckoutState {
+  final double subtotal;
+  final double shippingFee;
+  final double codFee;
+  final double totalPrice;
+  final String paymentMethod;
+  final String last4; // empty for Cash on Delivery
 
-    if (cardHolderName.trim().isEmpty) {
-      emit(const CheckoutError('Please enter the cardholder name'));
-      return;
-    }
+  const CheckoutSuccess({
+    required this.subtotal,
+    required this.shippingFee,
+    required this.codFee,
+    required this.totalPrice,
+    required this.paymentMethod,
+    required this.last4,
+  });
 
-    if (digitsOnly.length != 16 || int.tryParse(digitsOnly) == null) {
-      emit(const CheckoutError('Card number must be 16 digits'));
-      return;
-    }
+  @override
+  List<Object?> get props => [
+    subtotal,
+    shippingFee,
+    codFee,
+    totalPrice,
+    paymentMethod,
+    last4,
+  ];
+}
 
-    if (!RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$').hasMatch(expiryDate)) {
-      emit(const CheckoutError('Expiry date must be in MM/YY format'));
-      return;
-    }
+class CheckoutError extends CheckoutState {
+  final String message;
 
-    if (cvv.length != 3 || int.tryParse(cvv) == null) {
-      emit(const CheckoutError('CVV must be 3 digits'));
-      return;
-    }
+  const CheckoutError(this.message);
 
-    await Future.delayed(const Duration(seconds: 2));
-
-    final last4 = digitsOnly.substring(digitsOnly.length - 4);
-    final totalPrice = items.fold<double>(
-      0,
-      (sum, item) => sum + item.totalPrice,
-    );
-
-    final order = OrderModel(
-      items:
-          items
-              .map(
-                (item) => OrderLineItem(
-                  productId: item.product.id.toString(),
-                  productTitle: item.product.title,
-                  productImage: item.product.image,
-                  unitPrice: item.product.price,
-                  quantity: item.quantity,
-                ),
-              )
-              .toList(),
-      totalPrice: totalPrice,
-      cardHolderName: cardHolderName,
-      last4: last4,
-      status: 'success',
-      createdAt: DateTime.now(),
-      subtotal: null,
-      shippingFee: null,
-      codFee: null,
-      paymentMethod: '',
-    );
-
-    try {
-      await _placeOrder(order);
-      emit(CheckoutSuccess(last4: last4, totalPrice: totalPrice));
-    } catch (e) {
-      emit(CheckoutError(e.toString()));
-    }
-  }
+  @override
+  List<Object?> get props => [message];
 }
