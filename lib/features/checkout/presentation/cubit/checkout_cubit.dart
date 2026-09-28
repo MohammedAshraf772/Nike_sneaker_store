@@ -1,49 +1,104 @@
-import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
+import 'package:nike_sneaker_store/features/checkout/data/models/order_model.dart';
+import 'package:nike_sneaker_store/features/checkout/domain/entities/payment_method.dart';
+import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_state.dart';
 
-abstract class CheckoutState extends Equatable {
-  const CheckoutState();
+class CheckoutCubit extends Cubit<CheckoutState> {
+  CheckoutCubit(this._placeOrder) : super(CheckoutInitial());
 
-  @override
-  List<Object?> get props => [];
-}
+  final PlaceOrder _placeOrder;
+  Future<void> pay({
+    required List<CartItemModel> items,
+    required PaymentMethod method,
+    String cardHolderName = '',
+    String cardNumber = '',
+    String expiryDate = '',
+    String cvv = '',
+  }) async {
+    emit(CheckoutProcessing());
 
-class CheckoutInitial extends CheckoutState {}
+    if (items.isEmpty) {
+      emit(const CheckoutError('Please select at least one item'));
+      return;
+    }
 
-class CheckoutProcessing extends CheckoutState {}
+    final subtotal = items.fold<double>(
+      0,
+      (sum, item) => sum + item.totalPrice,
+    );
+    final shippingFee = subtotal * 0.10;
+    final codFee = method == PaymentMethod.cashOnDelivery ? 15.0 : 0.0;
 
-class CheckoutSuccess extends CheckoutState {
-  final double subtotal;
-  final double shippingFee;
-  final double codFee;
-  final double totalPrice;
-  final String paymentMethod;
-  final String last4; // empty for Cash on Delivery
+    var last4 = '';
 
-  const CheckoutSuccess({
-    required this.subtotal,
-    required this.shippingFee,
-    required this.codFee,
-    required this.totalPrice,
-    required this.paymentMethod,
-    required this.last4,
-  });
+    if (method == PaymentMethod.visa) {
+      final digitsOnly = cardNumber.replaceAll(RegExp(r'\s+'), '');
 
-  @override
-  List<Object?> get props => [
-    subtotal,
-    shippingFee,
-    codFee,
-    totalPrice,
-    paymentMethod,
-    last4,
-  ];
-}
+      if (cardHolderName.trim().isEmpty) {
+        emit(const CheckoutError('Please enter the cardholder name'));
+        return;
+      }
+      if (digitsOnly.length != 16 || int.tryParse(digitsOnly) == null) {
+        emit(const CheckoutError('Card number must be 16 digits'));
+        return;
+      }
+      if (!RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$').hasMatch(expiryDate)) {
+        emit(const CheckoutError('Expiry date must be in MM/YY format'));
+        return;
+      }
+      if (cvv.length != 3 || int.tryParse(cvv) == null) {
+        emit(const CheckoutError('CVV must be 3 digits'));
+        return;
+      }
 
-class CheckoutError extends CheckoutState {
-  final String message;
+      last4 = digitsOnly.substring(digitsOnly.length - 4);
+      await Future.delayed(const Duration(seconds: 2));
+    } else {
+      await Future.delayed(const Duration(seconds: 1));
+    }
 
-  const CheckoutError(this.message);
+    final totalPrice = subtotal + shippingFee + codFee;
 
-  @override
-  List<Object?> get props => [message];
+    final order = OrderModel(
+      items:
+          items
+              .map(
+                (item) => OrderLineItem(
+                  productId: item.product.id.toString(),
+                  productTitle: item.product.title,
+                  productImage: item.product.image,
+                  unitPrice: item.product.price,
+                  quantity: item.quantity,
+                ),
+              )
+              .toList(),
+      subtotal: subtotal,
+      shippingFee: shippingFee,
+      codFee: codFee,
+      totalPrice: totalPrice,
+      paymentMethod: method.label,
+      cardHolderName: method == PaymentMethod.visa ? cardHolderName : '',
+      last4: last4,
+      status: 'success',
+      createdAt: DateTime.now(),
+    );
+
+    try {
+      await _placeOrder(order);
+      emit(
+        CheckoutSuccess(
+          subtotal: subtotal,
+          shippingFee: shippingFee,
+          codFee: codFee,
+          totalPrice: totalPrice,
+          paymentMethod: method.label,
+          last4: last4,
+        ),
+      );
+    } catch (e) {
+      emit(CheckoutError(e.toString()));
+    }
+  }
 }

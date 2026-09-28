@@ -12,13 +12,31 @@ class CheckoutInitial extends CheckoutState {}
 class CheckoutProcessing extends CheckoutState {}
 
 class CheckoutSuccess extends CheckoutState {
-  final String last4;
+  final double subtotal;
+  final double shippingFee;
+  final double codFee;
   final double totalPrice;
+  final String paymentMethod;
+  final String last4; // empty for Cash on Delivery
 
-  const CheckoutSuccess({required this.last4, required this.totalPrice});
+  const CheckoutSuccess({
+    required this.subtotal,
+    required this.shippingFee,
+    required this.codFee,
+    required this.totalPrice,
+    required this.paymentMethod,
+    required this.last4,
+  });
 
   @override
-  List<Object?> get props => [last4, totalPrice];
+  List<Object?> get props => [
+    subtotal,
+    shippingFee,
+    codFee,
+    totalPrice,
+    paymentMethod,
+    last4,
+  ];
 }
 
 class CheckoutError extends CheckoutState {
