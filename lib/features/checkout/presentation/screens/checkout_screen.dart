@@ -13,6 +13,7 @@ import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_card_form.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_pay_button.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_product_summary.dart';
+import 'package:nike_sneaker_store/features/checkout/domain/entities/payment_method.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final List<CartItemModel> items;
@@ -108,6 +109,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
 
     context.read<CheckoutCubit>().pay(
       items: widget.items,
+      method: PaymentMethod.visa,
       cardHolderName: _nameController.text,
       cardNumber: _cardController.text,
       expiryDate: _expiryController.text,
