@@ -5,12 +5,14 @@ class CheckoutPayButton extends StatelessWidget {
   final double totalPrice;
   final bool isProcessing;
   final VoidCallback onPressed;
+  final String label;
 
   const CheckoutPayButton({
     super.key,
     required this.totalPrice,
     required this.isProcessing,
     required this.onPressed,
+    this.label = 'Pay',
   });
 
   @override
@@ -34,7 +36,7 @@ class CheckoutPayButton extends StatelessWidget {
                       ),
                     )
                     : Text(
-                      'Pay \$${totalPrice.toStringAsFixed(2)}',
+                      '$label \$${totalPrice.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: AppColors.white,
                         fontSize: 18,
