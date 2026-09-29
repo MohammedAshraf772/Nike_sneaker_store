@@ -17,7 +17,7 @@ class CheckoutSuccess extends CheckoutState {
   final double codFee;
   final double totalPrice;
   final String paymentMethod;
-  final String last4; // empty for Cash on Delivery
+  final String last4;
 
   const CheckoutSuccess({
     required this.subtotal,
