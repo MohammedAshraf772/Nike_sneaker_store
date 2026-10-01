@@ -95,10 +95,30 @@ class CartCubit extends Cubit<CartState> {
           .collection('cart')
           .doc(productId.toString());
       final data = (await docRef.get()).data()!;
-      if (data['quantity'] <= 1)
+      if (data['quantity'] <= 1) {
         await docRef.delete();
-      else
+      } else {
         await docRef.update({'quantity': data['quantity'] - 1});
+      }
+      await loadCart();
+    } catch (e) {
+      await _handleError(e);
+    }
+  }
+
+  Future<void> removeItems(List<int> productIds) async {
+    try {
+      final batch = _firestore.batch();
+      for (final id in productIds) {
+        batch.delete(
+          _firestore
+              .collection('users')
+              .doc(uid)
+              .collection('cart')
+              .doc(id.toString()),
+        );
+      }
+      await batch.commit();
       await loadCart();
     } catch (e) {
       await _handleError(e);
