@@ -7,16 +7,19 @@ import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 import 'package:nike_sneaker_store/features/checkout/data/repository/order_repository_impl.dart';
 import 'package:nike_sneaker_store/features/checkout/data/services/card_scanner_service.dart';
+import 'package:nike_sneaker_store/features/checkout/domain/entities/payment_method.dart';
 import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_cubit.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_state.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_card_form.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_invoice_summary.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_pay_button.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_product_summary.dart';
-import 'package:nike_sneaker_store/features/checkout/domain/entities/payment_method.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/widget/payment_method_selector.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final List<CartItemModel> items;
+
   final VoidCallback? onSuccess;
 
   const CheckoutScreen({super.key, required this.items, this.onSuccess});
@@ -50,6 +53,14 @@ class _CheckoutViewState extends State<_CheckoutView> {
   final _cardScannerService = CardScannerService();
   final _imagePicker = ImagePicker();
   bool _isScanning = false;
+
+  PaymentMethod _method = PaymentMethod.visa;
+
+  double get _subtotal =>
+      widget.items.fold<double>(0, (sum, item) => sum + item.totalPrice);
+  double get _shipping => _subtotal * 0.10;
+  double get _codFee => _method == PaymentMethod.cashOnDelivery ? 15 : 0;
+  double get _total => _subtotal + _shipping + _codFee;
 
   @override
   void dispose() {
@@ -105,11 +116,13 @@ class _CheckoutViewState extends State<_CheckoutView> {
   }
 
   void _submit(BuildContext context) {
-    if (!_formKey.currentState!.validate()) return;
+    if (_method == PaymentMethod.visa && !_formKey.currentState!.validate()) {
+      return;
+    }
 
     context.read<CheckoutCubit>().pay(
       items: widget.items,
-      method: PaymentMethod.visa,
+      method: _method,
       cardHolderName: _nameController.text,
       cardNumber: _cardController.text,
       expiryDate: _expiryController.text,
@@ -125,15 +138,33 @@ class _CheckoutViewState extends State<_CheckoutView> {
       barrierDismissible: false,
       builder:
           (_) => AlertDialog(
-            title: const Text('Payment successful'),
-            content: Text(
-              'Charged \$${state.totalPrice.toStringAsFixed(2)} to card ending in ${state.last4}.',
+            title: const Text('Order placed'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Payment method: ${state.paymentMethod}'),
+                if (state.last4.isNotEmpty)
+                  Text('Card ending in ${state.last4}'),
+                const SizedBox(height: 8),
+                Text('Subtotal: \$${state.subtotal.toStringAsFixed(2)}'),
+                Text('Shipping: \$${state.shippingFee.toStringAsFixed(2)}'),
+                if (state.codFee > 0)
+                  Text(
+                    'Cash on Delivery fee: \$${state.codFee.toStringAsFixed(2)}',
+                  ),
+                const SizedBox(height: 8),
+                Text(
+                  'Total: \$${state.totalPrice.toStringAsFixed(2)}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // close dialog
-                  Navigator.of(context).pop(); // back to previous screen
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 child: const Text('Done'),
               ),
@@ -144,11 +175,6 @@ class _CheckoutViewState extends State<_CheckoutView> {
 
   @override
   Widget build(BuildContext context) {
-    final total = widget.items.fold<double>(
-      0,
-      (sum, item) => sum + item.totalPrice,
-    );
-
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
       appBar: AppBar(
@@ -175,20 +201,35 @@ class _CheckoutViewState extends State<_CheckoutView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CheckoutProductSummary(items: widget.items),
-                const SizedBox(height: 28),
-                CheckoutCardForm(
-                  formKey: _formKey,
-                  nameController: _nameController,
-                  cardController: _cardController,
-                  expiryController: _expiryController,
-                  cvvController: _cvvController,
-                  isScanning: _isScanning,
-                  onScanPressed: _scanCard,
+                const SizedBox(height: 24),
+                PaymentMethodSelector(
+                  selected: _method,
+                  onChanged: (method) => setState(() => _method = method),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 24),
+                if (_method == PaymentMethod.visa) ...[
+                  CheckoutCardForm(
+                    formKey: _formKey,
+                    nameController: _nameController,
+                    cardController: _cardController,
+                    expiryController: _expiryController,
+                    cvvController: _cvvController,
+                    isScanning: _isScanning,
+                    onScanPressed: _scanCard,
+                  ),
+                  const SizedBox(height: 24),
+                ],
+                CheckoutInvoiceSummary(
+                  subtotal: _subtotal,
+                  shippingFee: _shipping,
+                  codFee: _codFee,
+                  total: _total,
+                ),
+                const SizedBox(height: 24),
                 CheckoutPayButton(
-                  totalPrice: total,
+                  totalPrice: _total,
                   isProcessing: state is CheckoutProcessing,
+                  label: _method == PaymentMethod.visa ? 'Pay' : 'Place Order',
                   onPressed: () => _submit(context),
                 ),
               ],
