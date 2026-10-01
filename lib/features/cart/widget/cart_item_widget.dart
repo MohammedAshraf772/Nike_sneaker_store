@@ -6,7 +6,15 @@ import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dar
 
 class CartItemWidget extends StatelessWidget {
   final CartItemModel item;
-  const CartItemWidget({super.key, required this.item});
+  final bool isSelected;
+  final ValueChanged<bool?> onSelectedChanged;
+
+  const CartItemWidget({
+    super.key,
+    required this.item,
+    required this.isSelected,
+    required this.onSelectedChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +26,11 @@ class CartItemWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
+          Checkbox(
+            value: isSelected,
+            activeColor: AppColors.primary,
+            onChanged: onSelectedChanged,
+          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Container(
