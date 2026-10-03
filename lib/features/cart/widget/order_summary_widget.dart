@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/features/cart/cubit/cart_state.dart';
+import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 
 class OrderSummaryWidget extends StatelessWidget {
-  final CartState state;
+  final List<CartItemModel> items;
   final VoidCallback onCheckout;
 
   const OrderSummaryWidget({
     super.key,
-    required this.state,
+    required this.items,
     required this.onCheckout,
   });
 
   @override
   Widget build(BuildContext context) {
-    final shipping = state.totalPrice > 100 ? 0.0 : 9.99;
-    final total = state.totalPrice + shipping;
+    final subtotal = items.fold<double>(
+      0,
+      (sum, item) => sum + item.totalPrice,
+    );
+    final shipping = subtotal * 0.10;
+    final total = subtotal + shipping;
+    final hasSelection = items.isNotEmpty;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
@@ -25,17 +30,12 @@ class OrderSummaryWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildRow(
-            context,
-            'Subtotal',
-            '\$${state.totalPrice.toStringAsFixed(2)}',
-          ),
+          _buildRow(context, 'Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
           const SizedBox(height: 10),
           _buildRow(
             context,
-            'Shipping',
-            shipping == 0 ? 'FREE' : '\$${shipping.toStringAsFixed(2)}',
-            color: shipping == 0 ? const Color(0xFF2A9D8F) : null,
+            'Shipping (10%)',
+            '\$${shipping.toStringAsFixed(2)}',
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 14),
@@ -50,23 +50,29 @@ class OrderSummaryWidget extends StatelessWidget {
             isTotal: true,
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: onCheckout,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              minimumSize: const Size(double.infinity, 56),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+          if (!hasSelection)
+            Text(
+              'Select at least one item to check out',
+              style: TextStyle(color: AppColors.getTextSecondary(context)),
+            )
+          else
+            ElevatedButton(
+              onPressed: onCheckout,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                minimumSize: const Size(double.infinity, 56),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Text(
+                'Checkout — \$${total.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            child: Text(
-              'Checkout — \$${total.toStringAsFixed(2)}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -77,7 +83,6 @@ class OrderSummaryWidget extends StatelessWidget {
     String label,
     String value, {
     bool isTotal = false,
-    Color? color,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,10 +101,9 @@ class OrderSummaryWidget extends StatelessWidget {
           value,
           style: TextStyle(
             color:
-                color ??
-                (isTotal
+                isTotal
                     ? AppColors.primary
-                    : AppColors.getTextSecondary(context)),
+                    : AppColors.getTextSecondary(context),
             fontWeight: FontWeight.bold,
             fontSize: isTotal ? 18 : 14,
           ),
