@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/core/utils/card_brand_detector.dart';
 import 'package:nike_sneaker_store/core/utils/expiry_date_input_formatter.dart';
 
 class CheckoutCardForm extends StatelessWidget {
@@ -63,21 +64,34 @@ class CheckoutCardForm extends StatelessWidget {
                 (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
           ),
           const SizedBox(height: 12),
-          TextFormField(
-            controller: cardController,
-            keyboardType: TextInputType.number,
-            maxLength: 16,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(
-              labelText: 'Card number',
-              hintText: '•••• •••• •••• ••••',
-              counterText: '',
-            ),
-            validator:
-                (v) =>
-                    (v == null || v.replaceAll(' ', '').length != 16)
-                        ? 'Enter a 16-digit card number'
-                        : null,
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: cardController,
+            builder: (context, value, _) {
+              final brand = CardBrandDetector.detect(value.text);
+
+              return TextFormField(
+                controller: cardController,
+                keyboardType: TextInputType.number,
+                maxLength: 16,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  labelText: 'Card number',
+                  hintText: '•••• •••• •••• ••••',
+                  counterText: '',
+                  suffixText: brand == CardBrand.unknown ? null : brand.label,
+                  suffixStyle: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+                validator:
+                    (v) =>
+                        (v == null || v.replaceAll(' ', '').length != 16)
+                            ? 'Enter a 16-digit card number'
+                            : null,
+              );
+            },
           ),
           const SizedBox(height: 12),
           Row(
