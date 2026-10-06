@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/core/utils/currency.dart';
 
 class CheckoutInvoiceSummary extends StatelessWidget {
   final double subtotal;
   final double shippingFee;
   final double codFee;
   final double total;
+  final Currency currency;
 
   const CheckoutInvoiceSummary({
     super.key,
@@ -13,6 +15,7 @@ class CheckoutInvoiceSummary extends StatelessWidget {
     required this.shippingFee,
     required this.codFee,
     required this.total,
+    required this.currency,
   });
 
   @override
@@ -39,6 +42,19 @@ class CheckoutInvoiceSummary extends StatelessWidget {
             ),
           ),
           _row(context, 'Total', total, isTotal: true),
+          if (currency.code != 'USD') ...[
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                '≈ \$${total.toStringAsFixed(2)} USD',
+                style: TextStyle(
+                  color: AppColors.getTextSecondary(context),
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -47,9 +63,11 @@ class CheckoutInvoiceSummary extends StatelessWidget {
   Widget _row(
     BuildContext context,
     String label,
-    double value, {
+    double usdValue, {
     bool isTotal = false,
   }) {
+    final converted = currency.convertFromUsd(usdValue);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -64,7 +82,7 @@ class CheckoutInvoiceSummary extends StatelessWidget {
           ),
         ),
         Text(
-          '\$${value.toStringAsFixed(2)}',
+          '${currency.symbol}${converted.toStringAsFixed(2)}',
           style: TextStyle(
             color:
                 isTotal ? AppColors.primary : AppColors.getTextPrimary(context),
