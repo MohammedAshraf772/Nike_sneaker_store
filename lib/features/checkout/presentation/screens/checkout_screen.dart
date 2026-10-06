@@ -16,6 +16,7 @@ import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkou
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_pay_button.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_product_summary.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/payment_method_selector.dart';
+import 'package:nike_sneaker_store/core/utils/currency.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final List<CartItemModel> items;
@@ -224,6 +225,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
                   shippingFee: _shipping,
                   codFee: _codFee,
                   total: _total,
+                  currency: Currency.all.first,
                 ),
                 const SizedBox(height: 24),
                 CheckoutPayButton(
