@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:nike_sneaker_store/core/utils/currency.dart';
 
 abstract class CheckoutState extends Equatable {
   const CheckoutState();
@@ -18,6 +19,8 @@ class CheckoutSuccess extends CheckoutState {
   final double totalPrice;
   final String paymentMethod;
   final String last4;
+  final String cardBrand;
+  final Currency? currency;
 
   const CheckoutSuccess({
     required this.subtotal,
@@ -26,6 +29,8 @@ class CheckoutSuccess extends CheckoutState {
     required this.totalPrice,
     required this.paymentMethod,
     required this.last4,
+    this.cardBrand = '',
+    this.currency,
   });
 
   @override
@@ -36,6 +41,8 @@ class CheckoutSuccess extends CheckoutState {
     totalPrice,
     paymentMethod,
     last4,
+    cardBrand,
+    currency?.code,
   ];
 }
 
