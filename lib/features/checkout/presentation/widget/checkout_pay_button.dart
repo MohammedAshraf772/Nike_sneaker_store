@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/core/utils/currency.dart';
 
 class CheckoutPayButton extends StatelessWidget {
   final double totalPrice;
   final bool isProcessing;
   final VoidCallback onPressed;
   final String label;
+  final Currency? currency;
 
   const CheckoutPayButton({
     super.key,
@@ -13,10 +15,14 @@ class CheckoutPayButton extends StatelessWidget {
     required this.isProcessing,
     required this.onPressed,
     this.label = 'Pay',
+    this.currency,
   });
 
   @override
   Widget build(BuildContext context) {
+    final symbol = currency?.symbol ?? '\$';
+    final amount = currency?.convertFromUsd(totalPrice) ?? totalPrice;
+
     return Column(
       children: [
         SizedBox(
@@ -36,7 +42,7 @@ class CheckoutPayButton extends StatelessWidget {
                       ),
                     )
                     : Text(
-                      '$label \$${totalPrice.toStringAsFixed(2)}',
+                      '$label $symbol${amount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: AppColors.white,
                         fontSize: 18,
