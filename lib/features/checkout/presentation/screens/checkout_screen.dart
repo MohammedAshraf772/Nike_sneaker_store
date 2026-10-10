@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
+import 'package:nike_sneaker_store/core/utils/currency.dart';
 import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 import 'package:nike_sneaker_store/features/checkout/data/repository/order_repository_impl.dart';
 import 'package:nike_sneaker_store/features/checkout/data/services/card_scanner_service.dart';
@@ -15,12 +16,11 @@ import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkou
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_invoice_summary.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_pay_button.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_product_summary.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/widget/currency_selector.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/payment_method_selector.dart';
-import 'package:nike_sneaker_store/core/utils/currency.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final List<CartItemModel> items;
-
   final VoidCallback? onSuccess;
 
   const CheckoutScreen({super.key, required this.items, this.onSuccess});
@@ -56,6 +56,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
   bool _isScanning = false;
 
   PaymentMethod _method = PaymentMethod.visa;
+  Currency _currency = Currency.all.first;
 
   double get _subtotal =>
       widget.items.fold<double>(0, (sum, item) => sum + item.totalPrice);
@@ -124,6 +125,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
     context.read<CheckoutCubit>().pay(
       items: widget.items,
       method: _method,
+      currency: _currency,
       cardHolderName: _nameController.text,
       cardNumber: _cardController.text,
       expiryDate: _expiryController.text,
@@ -131,8 +133,14 @@ class _CheckoutViewState extends State<_CheckoutView> {
     );
   }
 
+  String _format(Currency currency, double usdAmount) {
+    return '${currency.symbol}${currency.convertFromUsd(usdAmount).toStringAsFixed(2)}';
+  }
+
   void _onSuccess(BuildContext context, CheckoutSuccess state) {
     widget.onSuccess?.call();
+
+    final currency = state.currency ?? Currency.all.first;
 
     showDialog(
       context: context,
@@ -146,17 +154,20 @@ class _CheckoutViewState extends State<_CheckoutView> {
               children: [
                 Text('Payment method: ${state.paymentMethod}'),
                 if (state.last4.isNotEmpty)
-                  Text('Card ending in ${state.last4}'),
+                  Text(
+                    '${state.cardBrand.isEmpty ? 'Card' : state.cardBrand} ending in ${state.last4}',
+                  ),
+                Text('Currency: ${currency.code}'),
                 const SizedBox(height: 8),
-                Text('Subtotal: \$${state.subtotal.toStringAsFixed(2)}'),
-                Text('Shipping: \$${state.shippingFee.toStringAsFixed(2)}'),
+                Text('Subtotal: ${_format(currency, state.subtotal)}'),
+                Text('Shipping: ${_format(currency, state.shippingFee)}'),
                 if (state.codFee > 0)
                   Text(
-                    'Cash on Delivery fee: \$${state.codFee.toStringAsFixed(2)}',
+                    'Cash on Delivery fee: ${_format(currency, state.codFee)}',
                   ),
                 const SizedBox(height: 8),
                 Text(
-                  'Total: \$${state.totalPrice.toStringAsFixed(2)}',
+                  'Total: ${_format(currency, state.totalPrice)}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -208,6 +219,11 @@ class _CheckoutViewState extends State<_CheckoutView> {
                   onChanged: (method) => setState(() => _method = method),
                 ),
                 const SizedBox(height: 24),
+                CurrencySelector(
+                  selected: _currency,
+                  onChanged: (currency) => setState(() => _currency = currency),
+                ),
+                const SizedBox(height: 24),
                 if (_method == PaymentMethod.visa) ...[
                   CheckoutCardForm(
                     formKey: _formKey,
@@ -225,11 +241,12 @@ class _CheckoutViewState extends State<_CheckoutView> {
                   shippingFee: _shipping,
                   codFee: _codFee,
                   total: _total,
-                  currency: Currency.all.first,
+                  currency: _currency,
                 ),
                 const SizedBox(height: 24),
                 CheckoutPayButton(
                   totalPrice: _total,
+                  currency: _currency,
                   isProcessing: state is CheckoutProcessing,
                   label: _method == PaymentMethod.visa ? 'Pay' : 'Place Order',
                   onPressed: () => _submit(context),
