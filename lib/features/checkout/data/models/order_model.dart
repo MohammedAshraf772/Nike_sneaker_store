@@ -33,6 +33,10 @@ class OrderModel {
   final String paymentMethod;
   final String cardHolderName;
   final String last4;
+  final String cardBrand;
+  final String currencyCode;
+  final double exchangeRate;
+  final double totalInSelectedCurrency;
   final String status;
   final DateTime createdAt;
 
@@ -45,6 +49,10 @@ class OrderModel {
     required this.paymentMethod,
     required this.cardHolderName,
     required this.last4,
+    required this.cardBrand,
+    required this.currencyCode,
+    required this.exchangeRate,
+    required this.totalInSelectedCurrency,
     required this.status,
     required this.createdAt,
   });
@@ -59,6 +67,10 @@ class OrderModel {
       'paymentMethod': paymentMethod,
       'cardHolderName': cardHolderName,
       'last4': last4,
+      'cardBrand': cardBrand,
+      'currencyCode': currencyCode,
+      'exchangeRate': exchangeRate,
+      'totalInSelectedCurrency': totalInSelectedCurrency,
       'status': status,
       'createdAt': createdAt.toIso8601String(),
     };
