@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ScannedCardData {
   final String? cardNumber;
@@ -9,12 +10,31 @@ class ScannedCardData {
   const ScannedCardData({this.cardNumber, this.expiryDate});
 
   bool get isEmpty => cardNumber == null && expiryDate == null;
+
+  String get feedbackMessage {
+    if (isEmpty) {
+      return "Couldn't read card details — try a clearer photo, or enter them manually";
+    }
+    return 'Scanned details filled in — please enter the cardholder name and CVV manually';
+  }
 }
 
 class CardScannerService {
   final TextRecognizer _recognizer = TextRecognizer(
     script: TextRecognitionScript.latin,
   );
+  final ImagePicker _picker = ImagePicker();
+
+  Future<ScannedCardData?> scanFromCamera() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 90,
+    );
+
+    if (pickedFile == null) return null;
+
+    return scanImage(File(pickedFile.path));
+  }
 
   Future<ScannedCardData> scanImage(File imageFile) async {
     final inputImage = InputImage.fromFile(imageFile);
