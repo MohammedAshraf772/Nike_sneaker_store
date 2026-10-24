@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/utils/currency.dart';
+import 'package:nike_sneaker_store/features/checkout/domain/entities/order_pricing.dart';
 
 class CheckoutInvoiceSummary extends StatelessWidget {
-  final double subtotal;
-  final double shippingFee;
-  final double codFee;
-  final double total;
+  final OrderPricing pricing;
   final Currency currency;
 
   const CheckoutInvoiceSummary({
     super.key,
-    required this.subtotal,
-    required this.shippingFee,
-    required this.codFee,
-    required this.total,
+    required this.pricing,
     required this.currency,
   });
 
@@ -28,12 +23,12 @@ class CheckoutInvoiceSummary extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _row(context, 'Subtotal', subtotal),
+          _row(context, 'Subtotal', pricing.subtotal),
           const SizedBox(height: 8),
-          _row(context, 'Shipping (10%)', shippingFee),
-          if (codFee > 0) ...[
+          _row(context, 'Shipping (10%)', pricing.shippingFee),
+          if (pricing.codFee > 0) ...[
             const SizedBox(height: 8),
-            _row(context, 'Cash on Delivery fee', codFee),
+            _row(context, 'Cash on Delivery fee', pricing.codFee),
           ],
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -41,21 +36,25 @@ class CheckoutInvoiceSummary extends StatelessWidget {
               color: AppColors.getTextSecondary(context).withOpacity(0.3),
             ),
           ),
-          _row(context, 'Total', total, isTotal: true),
-          if (currency.code != 'USD') ...[
-            const SizedBox(height: 4),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                '≈ \$${total.toStringAsFixed(2)} USD',
-                style: TextStyle(
-                  color: AppColors.getTextSecondary(context),
-                  fontSize: 11,
-                ),
-              ),
-            ),
-          ],
+          _row(context, 'Total', pricing.total, isTotal: true),
+          if (currency.code != 'USD') _usdReference(context),
         ],
+      ),
+    );
+  }
+
+  Widget _usdReference(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Text(
+          '≈ \$${pricing.total.toStringAsFixed(2)} USD',
+          style: TextStyle(
+            color: AppColors.getTextSecondary(context),
+            fontSize: 11,
+          ),
+        ),
       ),
     );
   }
