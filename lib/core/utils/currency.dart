@@ -13,6 +13,21 @@ class Currency {
 
   double convertFromUsd(double usdAmount) => usdAmount * rateFromUsd;
 
+  Currency copyWith({double? rateFromUsd}) {
+    return Currency(
+      code: code,
+      symbol: symbol,
+      name: name,
+      rateFromUsd: rateFromUsd ?? this.rateFromUsd,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) => other is Currency && other.code == code;
+
+  @override
+  int get hashCode => code.hashCode;
+
   static const List<Currency> all = [
     Currency(code: 'USD', symbol: '\$', name: 'US Dollar', rateFromUsd: 1),
     Currency(code: 'EUR', symbol: '€', name: 'Euro', rateFromUsd: 0.92),
