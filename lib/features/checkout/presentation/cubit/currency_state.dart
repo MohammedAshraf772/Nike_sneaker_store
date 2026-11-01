@@ -37,11 +37,5 @@ class CurrencyState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-    currencies.map((c) => '${c.code}:${c.rateFromUsd}').toList(),
-    selected.code,
-    selected.rateFromUsd,
-    isLoading,
-    isLive,
-  ];
+  List<Object?> get props => [currencies, selected, isLoading, isLive];
 }

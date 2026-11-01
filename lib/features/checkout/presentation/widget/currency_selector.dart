@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/core/utils/currency.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/cubit/currency_state.dart';
 
 class CurrencySelector extends StatelessWidget {
-  final Currency selected;
+  final CurrencyState state;
   final ValueChanged<Currency> onChanged;
 
   const CurrencySelector({
     super.key,
-    required this.selected,
+    required this.state,
     required this.onChanged,
   });
+
+  String get _statusMessage {
+    if (state.isLoading) return 'Fetching live exchange rates...';
+    if (state.isLive) {
+      return 'Live rates, updated daily · Rates By Exchange Rate API';
+    }
+    return 'Live rates unavailable — showing approximate rates';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +43,7 @@ class CurrencySelector extends StatelessWidget {
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<Currency>(
-              value: selected,
+              value: state.selected,
               isExpanded: true,
               dropdownColor: AppColors.getCard(context),
               icon: Icon(
@@ -42,7 +51,7 @@ class CurrencySelector extends StatelessWidget {
                 color: AppColors.getTextSecondary(context),
               ),
               items:
-                  Currency.all.map((currency) {
+                  state.currencies.map((currency) {
                     return DropdownMenuItem(
                       value: currency,
                       child: Text(
@@ -61,7 +70,7 @@ class CurrencySelector extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Approximate rate for demo purposes — not a live exchange rate',
+          _statusMessage,
           style: TextStyle(
             color: AppColors.getTextSecondary(context),
             fontSize: 11,

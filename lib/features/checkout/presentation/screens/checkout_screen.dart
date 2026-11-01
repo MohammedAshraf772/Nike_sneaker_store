@@ -10,6 +10,7 @@ import 'package:nike_sneaker_store/features/checkout/domain/entities/payment_met
 import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_cubit.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/cubit/checkout_state.dart';
+import 'package:nike_sneaker_store/features/checkout/presentation/cubit/currency_cubit.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_card_form.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_invoice_summary.dart';
 import 'package:nike_sneaker_store/features/checkout/presentation/widget/checkout_pay_button.dart';
@@ -111,7 +112,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
   @override
   Widget build(BuildContext context) {
     final pricing = _pricing;
-
+    final currencyState = context.watch<CurrencyCubit>().state;
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
       appBar: AppBar(
@@ -134,8 +135,8 @@ class _CheckoutViewState extends State<_CheckoutView> {
                 ),
                 const SizedBox(height: 24),
                 CurrencySelector(
-                  selected: _currency,
-                  onChanged: (currency) => setState(() => _currency = currency),
+                  state: currencyState,
+                  onChanged: context.read<CurrencyCubit>().select,
                 ),
                 const SizedBox(height: 24),
                 if (_method == PaymentMethod.visa) ...[
