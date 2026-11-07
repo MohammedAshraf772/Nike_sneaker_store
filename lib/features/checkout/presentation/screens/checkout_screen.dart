@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/core/utils/currency.dart';
+import 'package:nike_sneaker_store/features/checkout/data/services/exchange_rate_service.dart';
 import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 import 'package:nike_sneaker_store/features/checkout/data/repository/order_repository_impl.dart';
 import 'package:nike_sneaker_store/features/checkout/data/services/card_scanner_service.dart';
@@ -27,8 +27,15 @@ class CheckoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CheckoutCubit(PlaceOrder(OrderRepositoryImpl())),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => CheckoutCubit(PlaceOrder(OrderRepositoryImpl())),
+        ),
+        BlocProvider(
+          create: (_) => CurrencyCubit(ExchangeRateService())..loadRates(),
+        ),
+      ],
       child: _CheckoutView(items: items, onSuccess: onSuccess),
     );
   }
@@ -53,7 +60,6 @@ class _CheckoutViewState extends State<_CheckoutView> {
   final _scanner = CardScannerService();
 
   PaymentMethod _method = PaymentMethod.visa;
-  Currency _currency = Currency.all.first;
   bool _isScanning = false;
 
   OrderPricing get _pricing =>
