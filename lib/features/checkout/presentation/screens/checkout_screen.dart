@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/features/checkout/data/services/exchange_rate_service.dart';
 import 'package:nike_sneaker_store/features/cart/data/models/cart_item_model.dart';
 import 'package:nike_sneaker_store/features/checkout/data/repository/order_repository_impl.dart';
 import 'package:nike_sneaker_store/features/checkout/data/services/card_scanner_service.dart';
+import 'package:nike_sneaker_store/features/checkout/data/services/exchange_rate_service.dart';
 import 'package:nike_sneaker_store/features/checkout/domain/entities/order_pricing.dart';
 import 'package:nike_sneaker_store/features/checkout/domain/entities/payment_method.dart';
 import 'package:nike_sneaker_store/features/checkout/domain/usecases/place_order.dart';
@@ -96,7 +96,7 @@ class _CheckoutViewState extends State<_CheckoutView> {
     context.read<CheckoutCubit>().pay(
       items: widget.items,
       method: _method,
-      currency: _currency,
+      currency: context.read<CurrencyCubit>().state.selected,
       cardHolderName: _nameController.text,
       cardNumber: _cardController.text,
       expiryDate: _expiryController.text,
@@ -119,6 +119,8 @@ class _CheckoutViewState extends State<_CheckoutView> {
   Widget build(BuildContext context) {
     final pricing = _pricing;
     final currencyState = context.watch<CurrencyCubit>().state;
+    final currency = currencyState.selected;
+
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
       appBar: AppBar(
@@ -157,11 +159,11 @@ class _CheckoutViewState extends State<_CheckoutView> {
                   ),
                   const SizedBox(height: 24),
                 ],
-                CheckoutInvoiceSummary(pricing: pricing, currency: _currency),
+                CheckoutInvoiceSummary(pricing: pricing, currency: currency),
                 const SizedBox(height: 24),
                 CheckoutPayButton(
                   totalPrice: pricing.total,
-                  currency: _currency,
+                  currency: currency,
                   isProcessing: state is CheckoutProcessing,
                   label: _method == PaymentMethod.visa ? 'Pay' : 'Place Order',
                   onPressed: () => _submit(context),
