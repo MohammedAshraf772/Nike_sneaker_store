@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,11 +8,23 @@ import 'package:nike_sneaker_store/features/home/data/models/product_model.dart'
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit() : super(const CartState());
+  CartCubit() : super(const CartState()) {
+    _authSubscription = _auth.authStateChanges().listen(_onAuthChanged);
+  }
 
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  StreamSubscription<User?>? _authSubscription;
+
   String get uid => _auth.currentUser!.uid;
+
+  void _onAuthChanged(User? user) {
+    if (user == null) {
+      emit(const CartState());
+    } else {
+      loadCart();
+    }
+  }
 
   Future<void> _handleError(dynamic e) async =>
       emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
@@ -142,5 +156,11 @@ class CartCubit extends Cubit<CartState> {
     } catch (e) {
       await _handleError(e);
     }
+  }
+
+  @override
+  Future<void> close() {
+    _authSubscription?.cancel();
+    return super.close();
   }
 }
