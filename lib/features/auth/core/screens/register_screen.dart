@@ -31,6 +31,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  void _onRegisterPressed() {
+    context.read<AuthCubit>().register(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      confirmPassword: _confirmPasswordController.text.trim(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,163 +69,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 40),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: AppColors.getCard(context),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.getTextPrimary(context),
-                        size: 18,
-                      ),
-                    ),
-                  ),
+                  _buildBackButton(context),
                   const SizedBox(height: 24),
-                  Text(
-                    'Create\nAccount ✨',
-                    style: TextStyle(
-                      color: AppColors.getTextPrimary(context),
-                      fontSize: 34,
-                      fontWeight: FontWeight.w900,
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Sign up to start shopping',
-                    style: TextStyle(
-                      color: AppColors.getTextSecondary(context),
-                    ),
-                  ),
+                  _buildHeader(context),
                   const SizedBox(height: 32),
-                  CustomTextField(
-                    controller: _nameController,
-                    label: "Full Name",
-                    hint: "Enter Your Name",
-                    icon: Icons.person_outline,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    controller: _emailController,
-                    label: "Email",
-                    hint: "email@gmail.com",
-                    icon: Icons.email_outlined,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    controller: _passwordController,
-                    label: "Password",
-                    hint: "********",
-                    icon: Icons.lock_outline,
-                    obscureText: _obscurePassword,
-                    suffix: GestureDetector(
-                      onTap:
-                          () => setState(
-                            () => _obscurePassword = !_obscurePassword,
-                          ),
-                      child: Icon(
-                        _obscurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.getTextSecondary(context),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  CustomTextField(
-                    controller: _confirmPasswordController,
-                    label: "Confirm Password",
-                    hint: "********",
-                    icon: Icons.lock_outline,
-                    obscureText: _obscureConfirmPassword,
-                    suffix: GestureDetector(
-                      onTap:
-                          () => setState(
-                            () =>
-                                _obscureConfirmPassword =
-                                    !_obscureConfirmPassword,
-                          ),
-                      child: Icon(
-                        _obscureConfirmPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.getTextSecondary(context),
-                      ),
-                    ),
-                  ),
+                  _buildFormFields(),
                   const SizedBox(height: 32),
-                  GestureDetector(
-                    onTap:
-                        isLoading
-                            ? null
-                            : () {
-                              context.read<AuthCubit>().register(
-                                name: _nameController.text.trim(),
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
-                                confirmPassword:
-                                    _confirmPasswordController.text.trim(),
-                              );
-                            },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color:
-                            isLoading
-                                ? AppColors.primary.withOpacity(0.6)
-                                : AppColors.primary,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Center(
-                        child:
-                            isLoading
-                                ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                                : const Text(
-                                  "Create Account",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                      ),
-                    ),
-                  ),
-
+                  _buildRegisterButton(isLoading),
                   const SizedBox(height: 24),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Already have an account? ",
-                        style: TextStyle(
-                          color: AppColors.getTextSecondary(context),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            color: AppColors.getTextPrimary(context),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
+                  _buildLoginPrompt(context),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -224,6 +85,160 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.pop(),
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: AppColors.getCard(context),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: AppColors.getTextPrimary(context),
+          size: 18,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Create\nAccount ✨',
+          style: TextStyle(
+            color: AppColors.getTextPrimary(context),
+            fontSize: 34,
+            fontWeight: FontWeight.w900,
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Sign up to start shopping',
+          style: TextStyle(color: AppColors.getTextSecondary(context)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFormFields() {
+    return Column(
+      children: [
+        CustomTextField(
+          controller: _nameController,
+          label: "Full Name",
+          hint: "Enter Your Name",
+          icon: Icons.person_outline,
+        ),
+        const SizedBox(height: 16),
+        CustomTextField(
+          controller: _emailController,
+          label: "Email",
+          hint: "email@gmail.com",
+          icon: Icons.email_outlined,
+          keyboardType: TextInputType.emailAddress,
+        ),
+        const SizedBox(height: 16),
+        CustomTextField(
+          controller: _passwordController,
+          label: "Password",
+          hint: "********",
+          icon: Icons.lock_outline,
+          obscureText: _obscurePassword,
+          suffix: _buildVisibilityToggle(
+            obscure: _obscurePassword,
+            onPressed:
+                () => setState(() => _obscurePassword = !_obscurePassword),
+          ),
+        ),
+        const SizedBox(height: 16),
+        CustomTextField(
+          controller: _confirmPasswordController,
+          label: "Confirm Password",
+          hint: "********",
+          icon: Icons.lock_outline,
+          obscureText: _obscureConfirmPassword,
+          suffix: _buildVisibilityToggle(
+            obscure: _obscureConfirmPassword,
+            onPressed:
+                () => setState(
+                  () => _obscureConfirmPassword = !_obscureConfirmPassword,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVisibilityToggle({
+    required bool obscure,
+    required VoidCallback onPressed,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Icon(
+        obscure ? Icons.visibility : Icons.visibility_off,
+        color: AppColors.getTextSecondary(context),
+      ),
+    );
+  }
+
+  Widget _buildRegisterButton(bool isLoading) {
+    return GestureDetector(
+      onTap: isLoading ? null : _onRegisterPressed,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        height: 56,
+        decoration: BoxDecoration(
+          color:
+              isLoading
+                  ? AppColors.primary.withOpacity(0.6)
+                  : AppColors.primary,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Center(
+          child:
+              isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text(
+                    "Create Account",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginPrompt(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Already have an account? ",
+          style: TextStyle(color: AppColors.getTextSecondary(context)),
+        ),
+        GestureDetector(
+          onTap: () => context.pop(),
+          child: Text(
+            "Login",
+            style: TextStyle(
+              color: AppColors.getTextPrimary(context),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
