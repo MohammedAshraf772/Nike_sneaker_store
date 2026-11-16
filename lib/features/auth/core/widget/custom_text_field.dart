@@ -3,7 +3,7 @@ import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
-  final String label;
+  final String? label;
   final String hint;
   final IconData icon;
   final bool obscureText;
@@ -13,9 +13,9 @@ class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
     required this.controller,
-    required this.label,
     required this.hint,
     required this.icon,
+    this.label,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.suffix,
@@ -26,14 +26,16 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: AppColors.getTextPrimary(context),
-            fontSize: 13,
+        if (label != null) ...[
+          Text(
+            label!,
+            style: TextStyle(
+              color: AppColors.getTextPrimary(context),
+              fontSize: 13,
+            ),
           ),
-        ),
-        const SizedBox(height: 6),
+          const SizedBox(height: 6),
+        ],
         Container(
           decoration: BoxDecoration(
             color: AppColors.getCard(context),
