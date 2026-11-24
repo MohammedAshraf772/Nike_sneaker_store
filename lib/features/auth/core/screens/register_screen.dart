@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
 import 'package:nike_sneaker_store/features/auth/core/cubit/auth_state.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/auth_back_button.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/auth_button.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/auth_header.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/auth_state_listener.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/auth_switch_link.dart';
 import 'package:nike_sneaker_store/features/auth/core/widget/custom_text_field.dart';
+import 'package:nike_sneaker_store/features/auth/core/widget/password_field.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/auth_cubit.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -19,9 +24,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
-
   @override
   void dispose() {
     _nameController.dispose();
@@ -31,198 +33,76 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  void _register() {
+    context.read<AuthCubit>().register(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      confirmPassword: _confirmPasswordController.text.trim(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select<AuthCubit, bool>(
+      (cubit) => cubit.state is AuthLoading,
+    );
+
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
-      body: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            context.go('/home');
-          }
-
-          if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          final isLoading = state is AuthLoading;
-
-          return SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 40),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: AppColors.getCard(context),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.getTextPrimary(context),
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Create\nAccount ✨',
-                    style: TextStyle(
-                      color: AppColors.getTextPrimary(context),
-                      fontSize: 34,
-                      fontWeight: FontWeight.w900,
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Sign up to start shopping',
-                    style: TextStyle(
-                      color: AppColors.getTextSecondary(context),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  CustomTextField(
-                    controller: _nameController,
-                    label: "Full Name",
-                    hint: "Enter Your Name",
-                    icon: Icons.person_outline,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    controller: _emailController,
-                    label: "Email",
-                    hint: "email@gmail.com",
-                    icon: Icons.email_outlined,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    controller: _passwordController,
-                    label: "Password",
-                    hint: "********",
-                    icon: Icons.lock_outline,
-                    obscureText: _obscurePassword,
-                    suffix: GestureDetector(
-                      onTap:
-                          () => setState(
-                            () => _obscurePassword = !_obscurePassword,
-                          ),
-                      child: Icon(
-                        _obscurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.getTextSecondary(context),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  CustomTextField(
-                    controller: _confirmPasswordController,
-                    label: "Confirm Password",
-                    hint: "********",
-                    icon: Icons.lock_outline,
-                    obscureText: _obscureConfirmPassword,
-                    suffix: GestureDetector(
-                      onTap:
-                          () => setState(
-                            () =>
-                                _obscureConfirmPassword =
-                                    !_obscureConfirmPassword,
-                          ),
-                      child: Icon(
-                        _obscureConfirmPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.getTextSecondary(context),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  GestureDetector(
-                    onTap:
-                        isLoading
-                            ? null
-                            : () {
-                              context.read<AuthCubit>().register(
-                                name: _nameController.text.trim(),
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
-                                confirmPassword:
-                                    _confirmPasswordController.text.trim(),
-                              );
-                            },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color:
-                            isLoading
-                                ? AppColors.primary.withOpacity(0.6)
-                                : AppColors.primary,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Center(
-                        child:
-                            isLoading
-                                ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                                : const Text(
-                                  "Create Account",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Already have an account? ",
-                        style: TextStyle(
-                          color: AppColors.getTextSecondary(context),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            color: AppColors.getTextPrimary(context),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-                ],
-              ),
+      body: AuthStateListener(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 40),
+                const AuthBackButton(),
+                const SizedBox(height: 24),
+                const AuthHeader(
+                  title: 'Create\nAccount ✨',
+                  subtitle: 'Sign up to start shopping',
+                ),
+                const SizedBox(height: 32),
+                CustomTextField(
+                  controller: _nameController,
+                  label: 'Full Name',
+                  hint: 'Enter Your Name',
+                  icon: Icons.person_outline,
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: _emailController,
+                  label: 'Email',
+                  hint: 'email@gmail.com',
+                  icon: Icons.email_outlined,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                PasswordField(controller: _passwordController),
+                const SizedBox(height: 16),
+                PasswordField(
+                  controller: _confirmPasswordController,
+                  label: 'Confirm Password',
+                ),
+                const SizedBox(height: 32),
+                AuthButton(
+                  label: 'Create Account',
+                  isLoading: isLoading,
+                  onPressed: _register,
+                ),
+                const SizedBox(height: 24),
+                AuthSwitchLink(
+                  question: 'Already have an account?',
+                  action: 'Login',
+                  onTap: () => Navigator.pop(context),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
