@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_sneaker_store/core/contants/app_colors.dart';
-import 'package:nike_sneaker_store/features/auth/data/datsource/auth_remote_datasource.dart';
-import 'package:nike_sneaker_store/features/auth/data/repository/auth_repository_impl.dart';
+import 'package:nike_sneaker_store/features/auth/domain/repository/auth_repository.dart';
 import 'package:nike_sneaker_store/features/auth/domain/usecses/forgot_password.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:nike_sneaker_store/features/auth/presentation/cubit/forgot_password_state.dart';
@@ -13,18 +10,13 @@ import 'package:nike_sneaker_store/features/auth/presentation/widget/forgot_pass
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
 
-  ForgotPasswordCubit _createCubit() {
-    final dataSource = AuthRemoteDataSource(
-      FirebaseAuth.instance,
-      FirebaseFirestore.instance,
-    );
-    return ForgotPasswordCubit(ForgotPassword(AuthRepositoryImpl(dataSource)));
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => _createCubit(),
+      create:
+          (_) => ForgotPasswordCubit(
+            ForgotPassword(context.read<AuthRepository>()),
+          ),
       child: const _ForgotPasswordView(),
     );
   }
