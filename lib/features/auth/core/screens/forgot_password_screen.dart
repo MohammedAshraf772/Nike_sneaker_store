@@ -13,20 +13,18 @@ import 'package:nike_sneaker_store/features/auth/presentation/widget/forgot_pass
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
 
+  ForgotPasswordCubit _createCubit() {
+    final dataSource = AuthRemoteDataSource(
+      FirebaseAuth.instance,
+      FirebaseFirestore.instance,
+    );
+    return ForgotPasswordCubit(ForgotPassword(AuthRepositoryImpl(dataSource)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (_) => ForgotPasswordCubit(
-            ForgotPassword(
-              AuthRepositoryImpl(
-                AuthRemoteDataSource(
-                  FirebaseAuth.instance,
-                  FirebaseFirestore.instance,
-                ),
-              ),
-            ),
-          ),
+      create: (_) => _createCubit(),
       child: const _ForgotPasswordView(),
     );
   }
@@ -40,55 +38,59 @@ class _ForgotPasswordView extends StatefulWidget {
 }
 
 class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
-  final TextEditingController emailController = TextEditingController();
+  final _emailController = TextEditingController();
 
   @override
   void dispose() {
-    emailController.dispose();
+    _emailController.dispose();
     super.dispose();
+  }
+
+  void _onStateChanged(BuildContext context, ForgotPasswordState state) {
+    if (state is ForgotPasswordSent) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'If this email is registered, a reset link has been sent',
+          ),
+        ),
+      );
+      Navigator.pop(context);
+    } else if (state is ForgotPasswordError) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.message)));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isSending = context.select<ForgotPasswordCubit, bool>(
+      (cubit) => cubit.state is ForgotPasswordSending,
+    );
+
     return Scaffold(
       backgroundColor: AppColors.getBackground(context),
       appBar: AppBar(
         title: Text(
-          "Forgot Password",
+          'Forgot Password',
           style: TextStyle(color: AppColors.getTextPrimary(context)),
         ),
+        iconTheme: IconThemeData(color: AppColors.getTextPrimary(context)),
         backgroundColor: AppColors.getBackground(context),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
-          listener: (context, state) {
-            if (state is ForgotPasswordSent) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "If this email is registered, a reset link has been sent",
-                  ),
+      body: BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
+        listener: _onStateChanged,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: ForgotPasswordForm(
+            emailController: _emailController,
+            isSending: isSending,
+            onSendPressed:
+                () => context.read<ForgotPasswordCubit>().sendResetLink(
+                  _emailController.text,
                 ),
-              );
-              Navigator.pop(context);
-            } else if (state is ForgotPasswordError) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
-            }
-          },
-          builder: (context, state) {
-            return ForgotPasswordForm(
-              emailController: emailController,
-              isSending: state is ForgotPasswordSending,
-              onSendPressed: () {
-                context.read<ForgotPasswordCubit>().sendResetLink(
-                  emailController.text,
-                );
-              },
-            );
-          },
+          ),
         ),
       ),
     );
