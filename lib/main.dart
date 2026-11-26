@@ -10,6 +10,7 @@ import 'firebase_options.dart';
 
 import 'package:nike_sneaker_store/features/auth/data/datsource/auth_remote_datasource.dart';
 import 'package:nike_sneaker_store/features/auth/data/repository/auth_repository_impl.dart';
+import 'package:nike_sneaker_store/features/auth/domain/repository/auth_repository.dart';
 import 'package:nike_sneaker_store/features/auth/domain/usecses/login.dart';
 import 'package:nike_sneaker_store/features/auth/domain/usecses/logout.dart';
 import 'package:nike_sneaker_store/features/auth/domain/usecses/register.dart';
@@ -39,10 +40,13 @@ void main() async {
   final logoutUseCase = Logout(authRepository);
 
   runApp(
-    MyApp(
-      login: loginUseCase,
-      register: registerUseCase,
-      logout: logoutUseCase,
+    RepositoryProvider<AuthRepository>.value(
+      value: authRepository,
+      child: MyApp(
+        login: loginUseCase,
+        register: registerUseCase,
+        logout: logoutUseCase,
+      ),
     ),
   );
 }
